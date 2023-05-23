@@ -1,19 +1,21 @@
 interface User {
-    id: number,
-    name: string,
-    firstName: string
+    userId: number,
+    email: string,
+    password: string,
+    pseudonym: string,
 }
 
 interface Topic {
-    id: number,
+    topicId: number,
     title: string,
-    last_edited_date: Date,
-    description: string
+    creation_date: Date
 }
 
-interface Post {
-    id: number,
+interface TopicComment {
+    commentId: number,
+    userId: number,
     topicId: number,
-    creation_date: Date,
     content: string
+    creation_date: Date,
+    last_edited_date: Date,
 }

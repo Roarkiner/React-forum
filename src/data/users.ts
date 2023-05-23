@@ -1,28 +1,33 @@
 export const USERS: User[] = [
     {
-        id: 1,
-        name: "Polnareff",
-        firstName: "Jean-Pierre"
+        userId: 1,
+        pseudonym: "Polnareff",
+        email: "Jean-Pierre@gmail.com",
+        password: "password"
     },
     {
-        id: 2,
-        name: "Sarko",
-        firstName: "Nico"
+        userId: 2,
+        pseudonym: "Sarko",
+        email: "Nico@gmail.com",
+        password: "password"
     },
     {
-        id: 3,
-        name: "Watson",
-        firstName: "Emma"
+        userId: 3,
+        pseudonym: "Watson",
+        email: "Emma@gmail.com",
+        password: "password"
     },
     {
-        id: 4,
-        name: "Belaid",
-        firstName: "William"
+        userId: 4,
+        pseudonym: "BelauserId",
+        email: "William@gmail.com",
+        password: "password"
     },
     {
-        id: 5,
-        name: "Jones",
-        firstName: "Baghz"
+        userId: 5,
+        pseudonym: "Jones",
+        email: "Baghz@gmail.com",
+        password: "password"
     },
     
 ]

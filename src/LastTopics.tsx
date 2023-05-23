@@ -1,4 +1,5 @@
 import { TOPICS } from "./data/topics";
+import { TOPIC_COMMENTS } from "./data/topic_comments";
 import './assets/style/last-topics.css'
 
 const LastTopics = () => (
@@ -8,7 +9,7 @@ const LastTopics = () => (
             { TOPICS.map((t) => (
                 <div className="topics-block">
                     <div className="topics-title">{ t.title }</div>
-                    <div className="topics-content">{ t.description }</div>
+                    <div className="topics-content">{  }</div>
                 </div>
             )) }
         </div>
