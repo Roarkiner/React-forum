@@ -8,7 +8,7 @@ interface User {
 interface Topic {
     topicId: number,
     title: string,
-    creation_date: Date
+    creation_date: string
 }
 
 interface TopicComment {
