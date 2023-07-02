@@ -10,11 +10,11 @@ export function getApiToken(): string | undefined {
     return Cookies.get("apiToken");
 }
 
-export function getConnectedUserIRI(): string  {
+export function getConnectedUserIRI(): string {
     var token = getApiToken();
-    if(token === undefined)
+    if (token === undefined)
         return "";
-    
+
     var decodedToken: any = jwt_decode(token);
     return decodedToken.user;
 }
@@ -25,15 +25,15 @@ export function getConnectedUserId(): number {
     return Number(userIRISplitted[userIRISplitted.length - 1]);
 }
 
-export async function loginUser(email: string, password: string): Promise<{ token: string }>{
+export async function loginUser(email: string, password: string): Promise<{ token: string }> {
     const response = await fetch(apiUrl + "api/login_check", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ username: email, password: password})
+        body: JSON.stringify({ username: email, password: password })
     });
-    if(response.ok) {
+    if (response.ok) {
         const responseJson = await response.json();
         const apiToken = responseJson.token;
 

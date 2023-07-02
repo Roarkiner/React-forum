@@ -11,13 +11,13 @@ interface LayoutComponentProps {
 const Layout: React.FC<LayoutComponentProps> = ({ element, isAuthenticated, onLogout }) => {
   return (
     <>
-        <Navbar isAuthenticated={isAuthenticated} onLogout={onLogout} />
-        <main className='main'>
-            <div className='main-content'>
-                {element}
-            </div>
-        </main>
-        <Footer />
+      <Navbar isAuthenticated={isAuthenticated} onLogout={onLogout} />
+      <main className='main'>
+        <div className='main-content'>
+          {element}
+        </div>
+      </main>
+      <Footer />
     </>
   )
 }

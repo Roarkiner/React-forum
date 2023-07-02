@@ -1,7 +1,7 @@
 import { TopicSaveModel } from "../models/TopicSaveModel";
 import { getUsernameFromEmail } from "./UserService";
 import { apiUrl } from "./ApiService";
-import { getApiToken } from "./AuthService";
+import { getApiToken, getConnectedUserId } from "./AuthService";
 
 let topicPath = "api/topics";
 let topicApiUrl = apiUrl + topicPath;
@@ -64,20 +64,34 @@ export async function getTopic(topicId: number) {
     return topicResponseMapped;
 }
 
-export async function saveTopic(topicToAdd: TopicSaveModel): Promise<number>{
+export async function saveTopic(topicToAdd: TopicSaveModel): Promise<number> {
     const apiToken = getApiToken();
-    if(apiToken === undefined || apiToken.length < 1){
+    if (apiToken === undefined || apiToken.length < 1) {
         throw new Error('401 Unauthorized');
-    } else {
-        const response = await fetch(topicApiUrl, {
-            method: "POST",
-            headers: {
-                'Authorization': `Bearer ${apiToken}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(topicToAdd)
-        });
-        const topic = await response.json();
-        return topic.id;
     }
+    const response = await fetch(topicApiUrl, {
+        method: "POST",
+        headers: {
+            'Authorization': `Bearer ${apiToken}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(topicToAdd)
+    });
+    const topic = await response.json();
+    return topic.id;
+}
+
+export async function deleteTopic(topicId: number): Promise<boolean> {
+    const topicToDelete = await getTopic(topicId);
+    const apiToken = getApiToken();
+    if (topicToDelete.author.userId !== getConnectedUserId() || apiToken === undefined || apiToken.length < 1) {
+        throw new Error('401 Unauthorized');
+    }
+    const response = await fetch(topicApiUrl + `/${topicId}`, {
+        method: "DELETE",
+        headers: {
+            'Authorization': `Bearer ${apiToken}`,
+        }
+    });
+    return response.ok;
 }

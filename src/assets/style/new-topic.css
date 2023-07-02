@@ -26,12 +26,12 @@
 .new-topic-page .form-group {
     margin-bottom: 16px;
 }
-  
+
 .new-topic-page label {
     font-weight: bold;
     color: black;
 }
-  
+
 .new-topic-page input,
 .new-topic-page textarea {
     padding: 8px;
@@ -45,7 +45,7 @@
 .new-topic-page textarea {
     height: 180px;
 }
-  
+
 .new-topic-page button {
     padding: 8px 16px;
     background-color: #679c85;
@@ -59,4 +59,3 @@
 .new-topic-page button:hover {
     background-color: #568d75;
 }
-  

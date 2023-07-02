@@ -16,21 +16,21 @@ import TopicDetail from '../pages/TopicDetail';
 
 const App: React.FC = () => {
   const isAuthenticatedQuery = useQuery(["authentication"], isUserAuthenticated);
-  const queryClient = useQueryClient()
-  
+  const queryClient = useQueryClient();
+
   function refreshIsAuthenticated(): void {
     queryClient.invalidateQueries({ queryKey: ["authentication"] });
   }
 
   const routing = useRoutes([
-      { path: "/*", element: <Layout onLogout={refreshIsAuthenticated} element={<Home />} isAuthenticated={isAuthenticatedQuery.data!} /> },
-      { path: "/", element: <Layout onLogout={refreshIsAuthenticated} element={<Home />} isAuthenticated={isAuthenticatedQuery.data!} /> },
-      { path: "/login", element: <Auth onLogin={ refreshIsAuthenticated } /> },
-      { path: "/my-topics", element: <PrivateRoute element={<Layout onLogout={refreshIsAuthenticated} element={<MyTopics />} isAuthenticated={isAuthenticatedQuery.data!} />} isAuthenticated={isAuthenticatedQuery.data!} /> },
-      { path: "/add-topic", element: <PrivateRoute element={<Layout onLogout={refreshIsAuthenticated} element={<NewTopic />} isAuthenticated={isAuthenticatedQuery.data!} />} isAuthenticated={isAuthenticatedQuery.data!} /> },
-      { path: "/topic-detail/:id", element: <PrivateRoute element={<Layout onLogout={refreshIsAuthenticated} element={<TopicDetail />} isAuthenticated={isAuthenticatedQuery.data!} />} isAuthenticated={isAuthenticatedQuery.data!} /> }
-    ]);
-  
+    { path: "/*", element: <Layout onLogout={refreshIsAuthenticated} element={<Home />} isAuthenticated={isAuthenticatedQuery.data!} /> },
+    { path: "/", element: <Layout onLogout={refreshIsAuthenticated} element={<Home />} isAuthenticated={isAuthenticatedQuery.data!} /> },
+    { path: "/login", element: <Auth onLogin={refreshIsAuthenticated} /> },
+    { path: "/my-topics", element: <PrivateRoute element={<Layout onLogout={refreshIsAuthenticated} element={<MyTopics />} isAuthenticated={isAuthenticatedQuery.data!} />} isAuthenticated={isAuthenticatedQuery.data!} /> },
+    { path: "/add-topic", element: <PrivateRoute element={<Layout onLogout={refreshIsAuthenticated} element={<NewTopic />} isAuthenticated={isAuthenticatedQuery.data!} />} isAuthenticated={isAuthenticatedQuery.data!} /> },
+    { path: "/topic-detail/:id", element: <PrivateRoute element={<Layout onLogout={refreshIsAuthenticated} element={<TopicDetail />} isAuthenticated={isAuthenticatedQuery.data!} />} isAuthenticated={isAuthenticatedQuery.data!} /> }
+  ]);
+
   return routing;
 };
 

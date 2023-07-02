@@ -12,7 +12,7 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
     e.preventDefault();
 
     const { token } = await loginUser(email, password);
-    if(token !== undefined && token.length > 1) {
+    if (token !== undefined && token.length > 1) {
       onLogin();
       navigate('/');
     } else {
@@ -23,27 +23,27 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   return (
     <>
       <h2>Se connecter</h2>
-      {error && <p className="error">{ error }</p>}
+      {error && <p className="error">{error}</p>}
       <div className="input-group">
         <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
+          <label htmlFor="email">Email</label>
+          <input
             type="email"
             className="form-control"
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            />
+          />
         </div>
         <div className="form-group">
-            <label htmlFor="password">Mot de passe</label>
-            <input
+          <label htmlFor="password">Mot de passe</label>
+          <input
             type="password"
             className="form-control"
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            />
+          />
         </div>
       </div>
       <button className="btn btn-primary" onClick={handleLogin}>

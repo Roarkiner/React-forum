@@ -5,7 +5,7 @@
     top: 10px;
     left: 10px;
 }
-  
+
 .return-link .return-arrow {
     color: #333;
     text-decoration: none;
@@ -26,7 +26,7 @@
     margin-bottom: 1rem;
     display: flex;
 }
-  
+
 .form-switch-auth button {
     padding: 0.5rem 1rem;
     border: 1px solid gray;
@@ -34,7 +34,7 @@
     min-width: 180px;
     font-size: large;
 }
-  
+
 .form-switch-auth button.active {
     background-color: rgba(140, 140, 240, 0.5);
 }

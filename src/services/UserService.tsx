@@ -3,7 +3,7 @@ import { apiUrl } from "./ApiService";
 let userPath = "api/users";
 let userApiUrl = apiUrl + userPath;
 
-export function getUsernameFromEmail(email: string): string{
+export function getUsernameFromEmail(email: string): string {
     let username = email.split("@")[0];
     return username;
 }

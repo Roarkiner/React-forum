@@ -11,7 +11,7 @@ const Auth: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
     const handleSwitchForm = (formType: 'login' | 'register') => {
         setSelectedForm(formType);
     };
-  
+
     return (
         <div className="auth-container">
             <div className="return-link">
@@ -21,24 +21,24 @@ const Auth: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
                 </Link>
             </div>
             <div className="form-switch-auth">
-            <button
-                className={`btn ${selectedForm === 'login' ? 'active' : ''}`}
-                onClick={() => handleSwitchForm('login')}
-            >
-                Se connecter
-            </button>
-            <span className="separator"></span>
-            <button
-                className={`btn ${selectedForm === 'register' ? 'active' : ''}`}
-                onClick={() => handleSwitchForm('register')}
-            >
-                Créer son compte
-            </button>
+                <button
+                    className={`btn ${selectedForm === 'login' ? 'active' : ''}`}
+                    onClick={() => handleSwitchForm('login')}
+                >
+                    Se connecter
+                </button>
+                <span className="separator"></span>
+                <button
+                    className={`btn ${selectedForm === 'register' ? 'active' : ''}`}
+                    onClick={() => handleSwitchForm('register')}
+                >
+                    Créer son compte
+                </button>
             </div>
-            {selectedForm === 'login' && <Login onLogin={onLogin}/>}
+            {selectedForm === 'login' && <Login onLogin={onLogin} />}
             {selectedForm === 'register' && <Register />}
-      </div>
+        </div>
     );
-  };
-  
-  export default Auth;
+};
+
+export default Auth;

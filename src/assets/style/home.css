@@ -10,11 +10,15 @@
   overflow: hidden;
 }
 
-.topic-card .card-body{
+.topic-card:hover{
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.topic-card .card-body {
   height: 220px;
 }
 
-.topic-card .card-body p{
+.topic-card .card-body p {
   width: 100%;
   overflow: hidden;
   display: -webkit-box;
@@ -28,21 +32,21 @@
   overflow: hidden;
 }
 
-.main-content{
+.main-content {
   margin-left: 60px;
 }
 
-.card-body{
+.card-body {
   position: relative;
 }
 
-.comments-count{
+.comments-count {
   display: block;
   position: absolute;
   right: 5px;
   bottom: 5px;
 }
 
-.btn-primary{
+.btn-primary {
   color: white !important;
 }

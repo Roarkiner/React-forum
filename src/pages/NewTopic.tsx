@@ -4,12 +4,14 @@ import { saveTopic } from "../services/TopicService";
 import { TopicSaveModel } from "../models/TopicSaveModel";
 import { getConnectedUserIRI } from "../services/AuthService";
 import { useNavigate } from 'react-router-dom';
+import { toast } from "react-toastify";
 
 const NewTopic: React.FC = () => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [titleError, setTitleError] = useState("");
     const [descriptionError, setDescriptionError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -33,6 +35,7 @@ const NewTopic: React.FC = () => {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        setIsLoading(true);
 
         if (title.trim() === "")
             setTitleError("Veuillez entrer un titre.");
@@ -40,8 +43,10 @@ const NewTopic: React.FC = () => {
         if (description.trim() === "")
             setDescriptionError("Veuillez entrer une description.");
 
-        if (titleError !== "" || descriptionError !== "")
+        if (titleError !== "" || descriptionError !== ""){
+            setIsLoading(false);
             return;
+        }
 
         const createdTopicId = await saveTopic(new TopicSaveModel(
             title,
@@ -49,8 +54,18 @@ const NewTopic: React.FC = () => {
             getConnectedUserIRI()
         ));
 
-        if(createdTopicId !== undefined){
+        if (createdTopicId !== undefined) {
             navigate(`/topic-detail/${createdTopicId}`, { replace: true })
+            setIsLoading(false);
+        } else {
+            toast.error("Un problème est survenu, veuillez rafraichir la page.", {
+                position: toast.POSITION.BOTTOM_RIGHT,
+                autoClose: 3000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false
+            });
+            setIsLoading(false);
         }
     };
 
@@ -79,7 +94,7 @@ const NewTopic: React.FC = () => {
                     />
                     {descriptionError && <p className="error">{descriptionError}</p>}
                 </div>
-                <button type="submit">Créer le sujet</button>
+                <button disabled={isLoading} type="submit">Créer le sujet</button>
             </form>
         </div>
     );
