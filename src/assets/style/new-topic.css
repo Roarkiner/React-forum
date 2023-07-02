@@ -1,0 +1,62 @@
+.new-topic-page {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #bcd9f2;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2%;
+}
+
+.new-topic-page h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: black;
+}
+
+.new-topic-page form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+}
+
+.new-topic-page .form-group {
+    margin-bottom: 16px;
+}
+  
+.new-topic-page label {
+    font-weight: bold;
+    color: black;
+}
+  
+.new-topic-page input,
+.new-topic-page textarea {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    resize: vertical;
+    background-color: white;
+    color: #000000;
+}
+
+.new-topic-page textarea {
+    height: 180px;
+}
+  
+.new-topic-page button {
+    padding: 8px 16px;
+    background-color: #679c85;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 50%;
+}
+
+.new-topic-page button:hover {
+    background-color: #568d75;
+}
+  

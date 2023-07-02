@@ -1,3 +1,8 @@
+interface UserListItem {
+    userId: number,
+    email: string
+}
+
 interface LightUser {
     userId: number,
     email: string,

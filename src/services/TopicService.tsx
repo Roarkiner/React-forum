@@ -1,12 +1,33 @@
 import { TopicSaveModel } from "../models/TopicSaveModel";
 import { getUsernameFromEmail } from "./UserService";
 import { apiUrl } from "./ApiService";
+import { getApiToken } from "./AuthService";
 
 let topicPath = "/topics";
 let topicApiUrl = apiUrl + topicPath;
 
 export async function getAllTopics(): Promise<TopicListItem[]> {
     const response = await fetch(topicApiUrl);
+    const data = await response.json();
+    const topicResponseMapped: TopicListItem[] = data["hydra:member"].map((topic: any): TopicListItem => {
+        return {
+            topicId: topic.id,
+            title: topic.name,
+            description: topic.description,
+            creation_date: topic.createdAt,
+            author: {
+                userId: topic.author.id,
+                email: topic.author.email,
+                username: getUsernameFromEmail(topic.author.email)
+            },
+            commentsCount: topic.commentsCount
+        };
+    });
+    return topicResponseMapped;
+}
+
+export async function getAllTopicsForUser(userId: number): Promise<TopicListItem[]> {
+    const response = await fetch(topicApiUrl + `?author=${userId}`);
     const data = await response.json();
     const topicResponseMapped: TopicListItem[] = data["hydra:member"].map((topic: any): TopicListItem => {
         return {
@@ -43,25 +64,20 @@ export async function getTopic(topicId: number) {
     return topicResponseMapped;
 }
 
-export async function saveTopic(topicToAdd: TopicSaveModel): Promise<TopicDetail>{
-    const response = await fetch(topicApiUrl, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(topicToAdd)
-    });
-    const topic = await response.json();
-    return {
-        topicId: topic.id,
-        title: topic.name,
-        description: topic.description,
-        creation_date: topic.createdAt,
-        author: {
-            userId: topic.author.id,
-            email: topic.author.email,
-            username: getUsernameFromEmail(topic.author.email)
-        },
-        comments: []
-    };
+export async function saveTopic(topicToAdd: TopicSaveModel): Promise<number>{
+    const apiToken = getApiToken();
+    if(apiToken === undefined || apiToken.length < 1){
+        throw new Error('401 Unauthorized');
+    } else {
+        const response = await fetch(topicApiUrl, {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ${apiToken}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(topicToAdd)
+        });
+        const topic = await response.json();
+        return topic.id;
+    }
 }

@@ -1,4 +1,4 @@
-.last-topics {
+.topic-card-list {
   display: inline-flex;
   flex-wrap: wrap;
   gap: 20px;
@@ -30,4 +30,19 @@
 
 .main-content{
   margin-left: 60px;
+}
+
+.card-body{
+  position: relative;
+}
+
+.comments-count{
+  display: block;
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+}
+
+.btn-primary{
+  color: white !important;
 }

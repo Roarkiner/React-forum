@@ -1,19 +1,17 @@
 import '../assets/style/layout.css'
-// Bootstrap CSS
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
 interface LayoutComponentProps {
   element: React.ReactNode;
   isAuthenticated: boolean;
+  onLogout: () => void;
 }
 
-const Layout: React.FC<LayoutComponentProps> = ({ element, isAuthenticated }) => {
+const Layout: React.FC<LayoutComponentProps> = ({ element, isAuthenticated, onLogout }) => {
   return (
     <>
-        <Navbar isAuthenticated={isAuthenticated} />
+        <Navbar isAuthenticated={isAuthenticated} onLogout={onLogout} />
         <main className='main'>
             <div className='main-content'>
                 {element}
