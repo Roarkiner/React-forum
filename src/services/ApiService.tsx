@@ -1,1 +1,1 @@
-export let apiUrl = "https://ynov-topics-comments.ld-web.net/api";
+export let apiUrl = "https://ynov-topics-comments.ld-web.net/";

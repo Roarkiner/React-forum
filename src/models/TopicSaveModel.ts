@@ -1,11 +1,11 @@
 export class TopicSaveModel {
     public name: string;
     public description: string;
-    public author: string;
+    public authorIRI: string;
     
-    constructor(name: string, description:string, authorId: number){
+    constructor(name: string, description:string, authorIRI: string){
         this.name = name;
         this.description = description;
-        this.author = "/api/users/" + authorId.toString();
+        this.authorIRI = authorIRI;
     }
 }

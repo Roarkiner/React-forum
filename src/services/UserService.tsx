@@ -1,6 +1,6 @@
 import { apiUrl } from "./ApiService";
 
-let userPath = "/users";
+let userPath = "api/users";
 let userApiUrl = apiUrl + userPath;
 
 export function getUsernameFromEmail(email: string): string{
@@ -18,20 +18,4 @@ export async function getUserById(userId: number): Promise<LightUser> {
     };
 
     return topicResponseMapped;
-}
-
-export async function getUserIdFromEmail(userEmail: string): Promise<number>{
-    const response = await fetch(userApiUrl);
-    const data = await response.json();
-    const topicResponseMapped: UserListItem[] = data["hydra:member"].map((user: any): UserListItem => {
-        return {
-            userId: user.id,
-            email: user.email,
-        };
-    });
-    const matchingUser = topicResponseMapped.find(({email}) => email === userEmail);
-    if(matchingUser === undefined){
-        return 0;
-    }
-    return matchingUser.userId;
 }

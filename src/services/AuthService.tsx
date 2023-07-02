@@ -1,6 +1,6 @@
 import Cookies from "js-cookie"
 import { apiUrl } from "./ApiService";
-import { getUserIdFromEmail } from "./UserService";
+import jwt_decode from "jwt-decode";
 
 export function isUserAuthenticated(): boolean {
     return getApiToken() !== undefined;
@@ -10,12 +10,23 @@ export function getApiToken(): string | undefined {
     return Cookies.get("apiToken");
 }
 
-export function getConnectedUserId(): number  {
-    return Number(Cookies.get("userId"));
+export function getConnectedUserIRI(): string  {
+    var token = getApiToken();
+    if(token === undefined)
+        return "";
+    
+    var decodedToken: any = jwt_decode(token);
+    return decodedToken.user;
+}
+
+export function getConnectedUserId(): number {
+    const userIRI = getConnectedUserIRI();
+    const userIRISplitted = userIRI.split("/");
+    return Number(userIRISplitted[userIRISplitted.length - 1]);
 }
 
 export async function loginUser(email: string, password: string): Promise<{ token: string }>{
-    const response = await fetch(apiUrl + "/login_check", {
+    const response = await fetch(apiUrl + "api/login_check", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -26,13 +37,7 @@ export async function loginUser(email: string, password: string): Promise<{ toke
         const responseJson = await response.json();
         const apiToken = responseJson.token;
 
-        const userId = await getUserIdFromEmail(email);
-        if(userId === 0){
-            return { token: "" }
-        }
-
         Cookies.set('apiToken', apiToken, { expires: 7 });
-        Cookies.set('userId', userId.toString(), { expires: 7 } )
         return { token: apiToken };
     } else {
         return { token: "" };
@@ -41,5 +46,4 @@ export async function loginUser(email: string, password: string): Promise<{ toke
 
 export function disconnectUser(): void {
     Cookies.remove('apiToken');
-    Cookies.remove('userId');
 }

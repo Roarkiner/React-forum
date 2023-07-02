@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import "../assets/style/new-topic.css"
 import { saveTopic } from "../services/TopicService";
 import { TopicSaveModel } from "../models/TopicSaveModel";
-import { getConnectedUserId } from "../services/AuthService";
+import { getConnectedUserIRI } from "../services/AuthService";
 import { useNavigate } from 'react-router-dom';
 
 const NewTopic: React.FC = () => {
@@ -46,7 +46,7 @@ const NewTopic: React.FC = () => {
         const createdTopicId = await saveTopic(new TopicSaveModel(
             title,
             description,
-            getConnectedUserId()
+            getConnectedUserIRI()
         ));
 
         if(createdTopicId !== undefined){

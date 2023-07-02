@@ -3,7 +3,7 @@ import { getUsernameFromEmail } from "./UserService";
 import { apiUrl } from "./ApiService";
 import { getApiToken } from "./AuthService";
 
-let topicPath = "/topics";
+let topicPath = "api/topics";
 let topicApiUrl = apiUrl + topicPath;
 
 export async function getAllTopics(): Promise<TopicListItem[]> {
