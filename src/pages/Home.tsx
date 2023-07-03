@@ -13,6 +13,12 @@ const Home: React.FC = () => {
         return (
             <>
                 <h1>Les derniers sujets</h1>
+                <div className="add-button">
+                <div className="btn btn-primary">
+                    <i className="bi bi-plus-circle h4 m-0 mx-2"></i>
+                    <span className="h4">Créer un nouveau sujet</span>
+                </div>
+                </div>
                 <div className="topic-card-list">
                     <TopicCardSkeleton />
                     <TopicCardSkeleton />

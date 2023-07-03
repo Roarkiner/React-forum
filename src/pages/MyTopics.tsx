@@ -27,6 +27,10 @@ const MyTopics: React.FC = () => {
         return (
             <>
                 <h1>Mes sujets</h1>
+                <div className="btn btn-primary">
+                    <i className="bi bi-plus-circle h4 m-0 mx-2"></i>
+                    <span className="h4">Créer un nouveau sujet</span>
+                </div>
                 <div className="topic-card-list">
                     <TopicCardSkeleton />
                     <TopicCardSkeleton />
