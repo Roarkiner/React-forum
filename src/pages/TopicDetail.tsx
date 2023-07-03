@@ -56,7 +56,7 @@ const TopicDetail: React.FC = () => {
                 </div>
             </div>
             {commentsQuery.data!.map((comment) => (
-                <div className="card">
+                <div key={comment.commentId} className="card">
                     <div className="card-body">
                         <p className="card-text">{comment.content}</p>
                     </div>
