@@ -64,7 +64,7 @@ export async function getTopic(topicId: number) {
     return topicResponseMapped;
 }
 
-export async function saveTopic(topicToAdd: TopicSaveModel): Promise<number> {
+export async function saveTopic(topicToSave: TopicSaveModel): Promise<number> {
     const apiToken = getApiToken();
     if (apiToken === undefined || apiToken.length < 1) {
         throw new Error('401 Unauthorized');
@@ -75,10 +75,15 @@ export async function saveTopic(topicToAdd: TopicSaveModel): Promise<number> {
             'Authorization': `Bearer ${apiToken}`,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(topicToAdd)
+        body: JSON.stringify(topicToSave)
     });
-    const topic = await response.json();
-    return topic.id;
+
+    if (response.ok) {
+        const topic = await response.json();
+        return topic.id;
+    } else {
+        return 0;
+    }
 }
 
 export async function deleteTopic(topicId: number): Promise<boolean> {

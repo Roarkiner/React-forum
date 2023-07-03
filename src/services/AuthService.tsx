@@ -1,6 +1,8 @@
 import Cookies from "js-cookie"
 import { apiUrl } from "./ApiService";
 import jwt_decode from "jwt-decode";
+import { UserSaveModel } from "../models/UserSaveModel";
+import { saveUser } from "./UserService";
 
 export function isUserAuthenticated(): boolean {
     return getApiToken() !== undefined;
@@ -46,4 +48,18 @@ export async function loginUser(email: string, password: string): Promise<{ toke
 
 export function disconnectUser(): void {
     Cookies.remove('apiToken');
+}
+
+export async function registerUser(userToRegister: UserSaveModel): Promise<boolean> {
+    try {
+        const userIRI = await saveUser(userToRegister);
+        if (userIRI == "") {
+            return false;
+        } else {
+            await loginUser(userToRegister.email, userToRegister.password);
+            return true;
+        }
+    } catch (e) {
+        throw e;
+    }
 }

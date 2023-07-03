@@ -36,7 +36,7 @@ const Auth: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
                 </button>
             </div>
             {selectedForm === 'login' && <Login onLogin={onLogin} />}
-            {selectedForm === 'register' && <Register />}
+            {selectedForm === 'register' && <Register onLogin={onLogin} />}
         </div>
     );
 };

@@ -1,9 +1,15 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { registerUser } from '../services/AuthService';
+import { UserSaveModel } from '../models/UserSaveModel';
+import { toast } from 'react-toastify';
 
-const Register: React.FC = () => {
+const Register: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({
     email: '',
     password: '',
@@ -53,8 +59,45 @@ const Register: React.FC = () => {
     }
   };
 
-  const handleRegister = () => {
-    console.log('Register:', email, password, confirmPassword);
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    validateEmail();
+    validatePassword();
+    validateConfirmPassword();
+
+    if (errors.email !== "" || errors.password !== "" || errors.confirmPassword !== "") {
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const result = await registerUser(new UserSaveModel(email, password));
+      if (result) {
+        onLogin();
+        navigate('/');
+      }
+      else
+        toast.error("Un problème est survenu, veuillez rafraichir la page.", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+          autoClose: 3000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: false
+        });
+    } catch (e) {
+      if (e instanceof Error) {
+        toast.error(e.message, {
+          position: toast.POSITION.BOTTOM_RIGHT,
+          autoClose: 3000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: false
+        });
+      }
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -98,7 +141,7 @@ const Register: React.FC = () => {
           {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
         </div>
       </div>
-      <button className="btn btn-primary" onClick={handleRegister}>
+      <button disabled={isLoading} className="btn btn-primary" onClick={handleRegister}>
         Créer mon compte
       </button>
     </div>

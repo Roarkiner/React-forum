@@ -7,9 +7,11 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const { token } = await loginUser(email, password);
     if (token !== undefined && token.length > 1) {
@@ -18,6 +20,8 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
     } else {
       setError('Email ou mot de passe incorrect.');
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -46,7 +50,7 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
           />
         </div>
       </div>
-      <button className="btn btn-primary" onClick={handleLogin}>
+      <button disabled={isLoading} className="btn btn-primary" onClick={handleLogin}>
         Me connecter
       </button>
     </>
