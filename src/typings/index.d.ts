@@ -24,12 +24,11 @@ interface TopicDetail {
     description: string,
     creation_date: string,
     author: LightUser,
-    comments: Comment[]
 }
 
-interface Comment {
+interface CommentListItem {
     commentId: number,
     content: string
-    creation_date: Date,
+    creation_date: string,
     author: LightUser
 }

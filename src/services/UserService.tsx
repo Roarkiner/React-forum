@@ -1,6 +1,5 @@
 import { UserSaveModel } from "../models/UserSaveModel";
 import { apiUrl } from "./ApiService";
-import { getApiToken } from "./AuthService";
 
 let userPath = "api/users";
 let userApiUrl = apiUrl + userPath;

@@ -3,8 +3,8 @@ import { getUsernameFromEmail } from "./UserService";
 import { apiUrl } from "./ApiService";
 import { getApiToken, getConnectedUserId } from "./AuthService";
 
-let topicPath = "api/topics";
-let topicApiUrl = apiUrl + topicPath;
+const topicPath = "api/topics";
+export const topicApiUrl = apiUrl + topicPath;
 
 export async function getAllTopics(): Promise<TopicListItem[]> {
     const response = await fetch(topicApiUrl);
@@ -47,7 +47,7 @@ export async function getAllTopicsForUser(userId: number): Promise<TopicListItem
 }
 
 export async function getTopic(topicId: number) {
-    const response = await fetch(topicApiUrl + `/${topicId}`)
+    const response = await fetch(topicApiUrl + `/${topicId}`);
     const data = await response.json();
     const topicResponseMapped: TopicDetail = {
         topicId: data.id,
@@ -58,8 +58,7 @@ export async function getTopic(topicId: number) {
             userId: data.author.id,
             email: data.author.email,
             username: getUsernameFromEmail(data.author.email)
-        },
-        comments: []
+        }
     };
     return topicResponseMapped;
 }

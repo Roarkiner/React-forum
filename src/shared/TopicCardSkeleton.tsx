@@ -1,5 +1,3 @@
-import '../assets/style/home.css'
-
 const TopicCardSkeleton = () => {
     return (
         <>
