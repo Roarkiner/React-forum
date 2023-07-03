@@ -11,3 +11,7 @@
     background-color: rgba(33,37,41,0.03);
     border-radius: 5px;
 }
+
+.topic-detail form{
+    width: 80%;
+}

@@ -50,6 +50,7 @@ export async function getTopic(topicId: number) {
     const response = await fetch(topicApiUrl + `/${topicId}`);
     const data = await response.json();
     const topicResponseMapped: TopicDetail = {
+        topicIRI: data["@id"],
         topicId: data.id,
         title: data.name,
         description: data.description,
@@ -71,7 +72,7 @@ export async function saveTopic(topicToSave: TopicSaveModel): Promise<number> {
     const response = await fetch(topicApiUrl, {
         method: "POST",
         headers: {
-            'Authorization': `Bearer ${apiToken}`,
+            "Authorization": `Bearer ${apiToken}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify(topicToSave)
@@ -94,7 +95,7 @@ export async function deleteTopic(topicId: number): Promise<boolean> {
     const response = await fetch(topicApiUrl + `/${topicId}`, {
         method: "DELETE",
         headers: {
-            'Authorization': `Bearer ${apiToken}`,
+            "'Authorization": `Bearer ${apiToken}`,
         }
     });
     return response.ok;

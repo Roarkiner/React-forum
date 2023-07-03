@@ -19,6 +19,7 @@ interface TopicListItem {
 }
 
 interface TopicDetail {
+    topicIRI: string,
     topicId: number,
     title: string,
     description: string,

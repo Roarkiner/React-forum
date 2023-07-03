@@ -65,8 +65,8 @@ const NewTopic: React.FC = () => {
                 pauseOnHover: true,
                 draggable: false
             });
-            setIsLoading(false);
         }
+        setIsLoading(false);
     };
 
     return (
