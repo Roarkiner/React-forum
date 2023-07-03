@@ -28,7 +28,7 @@ const App: React.FC = () => {
     { path: "/login", element: <Auth onLogin={refreshIsAuthenticated} /> },
     { path: "/my-topics", element: <PrivateRoute element={<Layout onLogout={refreshIsAuthenticated} element={<MyTopics />} isAuthenticated={isAuthenticatedQuery.data!} />} isAuthenticated={isAuthenticatedQuery.data!} /> },
     { path: "/add-topic", element: <PrivateRoute element={<Layout onLogout={refreshIsAuthenticated} element={<NewTopic />} isAuthenticated={isAuthenticatedQuery.data!} />} isAuthenticated={isAuthenticatedQuery.data!} /> },
-    { path: "/topic-detail/:id", element: <PrivateRoute element={<Layout onLogout={refreshIsAuthenticated} element={<TopicDetail />} isAuthenticated={isAuthenticatedQuery.data!} />} isAuthenticated={isAuthenticatedQuery.data!} /> }
+    { path: "/topic-detail/:id", element: <Layout onLogout={refreshIsAuthenticated} element={<TopicDetail />} isAuthenticated={isAuthenticatedQuery.data!} />}
   ]);
 
   return routing;
