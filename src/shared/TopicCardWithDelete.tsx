@@ -7,13 +7,11 @@ interface TopicCardWithDeleteProps {
     topic: TopicListItem,
     deleteCallback: () => void,
     isLoading: boolean,
-    setIsLoading: (value: boolean) => void
 }
 
-const TopicCardWithDelete: React.FC<TopicCardWithDeleteProps> = ({ topic, deleteCallback, isLoading, setIsLoading }) => {
+const TopicCardWithDelete: React.FC<TopicCardWithDeleteProps> = ({ topic, deleteCallback, isLoading }) => {
 
     async function handleTopicDelete() {
-        setIsLoading(true);
         const result = await deleteTopic(topic.topicId);
         if (result)
             deleteCallback();
@@ -25,7 +23,6 @@ const TopicCardWithDelete: React.FC<TopicCardWithDeleteProps> = ({ topic, delete
                 pauseOnHover: true,
                 draggable: false
             });
-        setIsLoading(false);
     }
 
     return (

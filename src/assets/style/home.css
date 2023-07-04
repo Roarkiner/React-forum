@@ -10,7 +10,7 @@
   overflow: hidden;
 }
 
-.topic-card:hover{
+.topic-card:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -51,6 +51,6 @@
   color: white !important;
 }
 
-.search-button{
+.search-button {
   border-radius: 0 5px 5px 0;
 }

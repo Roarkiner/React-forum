@@ -6,29 +6,13 @@ import { getApiToken, getConnectedUserId } from "./AuthService";
 const topicPath = "api/topics";
 export const topicApiUrl = apiUrl + topicPath;
 
-export async function getAllTopics(searchValue: string = "", page: number = 1): Promise<TopicListItem[]> {
-    const queryParams = new URLSearchParams({ name: searchValue, page: page.toString() }).toString();
-    const response = await fetch(`${topicApiUrl}?${queryParams}`);
-    const data = await response.json();
-    const topicResponseMapped: TopicListItem[] = data["hydra:member"].map((topic: any): TopicListItem => {
-        return {
-            topicId: topic.id,
-            title: topic.name,
-            description: topic.description,
-            creation_date: topic.createdAt,
-            author: {
-                userId: topic.author.id,
-                email: topic.author.email,
-                username: getUsernameFromEmail(topic.author.email)
-            },
-            commentsCount: topic.commentsCount
-        };
-    });
-    return topicResponseMapped;
-}
+export async function getAllTopics(searchValue: string = "", page: number = 1, author: number = 0): Promise<TopicListItem[]> {
+    const queryParams = new URLSearchParams({
+        name: searchValue,
+        page: page.toString(),
+        author: author !== 0 ? author.toString() : ""
+    }).toString();
 
-export async function getAllTopicsForUser(userId: number): Promise<TopicListItem[]> {
-    const queryParams = new URLSearchParams({ author: userId.toString() }).toString();
     const response = await fetch(`${topicApiUrl}?${queryParams}`);
     const data = await response.json();
     const topicResponseMapped: TopicListItem[] = data["hydra:member"].map((topic: any): TopicListItem => {
@@ -87,7 +71,7 @@ export async function saveTopic(topicToSave: TopicSaveModel): Promise<number> {
     }
 }
 
-export async function deleteTopic(topicId: number): Promise<boolean> {
+export async function deleteTopic(topicId: number): Promise<Response> {
     const topicToDelete = await getTopic(topicId);
     const apiToken = getApiToken();
     if (topicToDelete.author.userId !== getConnectedUserId() || apiToken === undefined || apiToken.length < 1) {
@@ -99,5 +83,5 @@ export async function deleteTopic(topicId: number): Promise<boolean> {
             'Authorization': `Bearer ${apiToken}`,
         }
     });
-    return response.ok;
+    return response;
 }
