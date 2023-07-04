@@ -1,5 +1,4 @@
 import '../assets/style/home.css';
-import '../assets/style/my-topics.css';
 
 import { Link } from 'react-router-dom';
 import { getConnectedUserId } from '../services/AuthService';
