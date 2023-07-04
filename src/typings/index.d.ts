@@ -38,3 +38,10 @@ interface CommentListItem {
     creation_date: string,
     author: LightUser
 }
+
+class AlreadyUsedError extends Error {
+    constructor(message: string){
+        super(message);
+        this.name = "AlreadyUsedError";
+    }
+}

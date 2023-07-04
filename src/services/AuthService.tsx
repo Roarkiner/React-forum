@@ -1,65 +1,62 @@
-import Cookies from "js-cookie"
-import { apiUrl } from "./ApiService";
 import jwt_decode from "jwt-decode";
+import { api } from "./ApiService";
 import { UserSaveModel } from "../models/UserSaveModel";
 import { saveUser } from "./UserService";
 
 export function isUserAuthenticated(): boolean {
-    return getApiToken() !== undefined;
+    return getApiToken() !== null;
 }
 
-export function getApiToken(): string | undefined {
-    return Cookies.get("apiToken");
+export function getApiToken(): string | null {
+    return localStorage.getItem("apiToken");
 }
 
-export function getConnectedUserIRI(): string {
+export function getConnectedUserIRI(): string | null {
     const token = getApiToken();
-    if (token === undefined)
-        return "";
+    if (token === null)
+        return null;
 
     const decodedToken: any = jwt_decode(token);
     return decodedToken.user;
 }
 
-export function getConnectedUserId(): number {
+export function getConnectedUserId(): number | null {
     const userIRI = getConnectedUserIRI();
+    if (userIRI === null) {
+        return null;
+    }
     const userIRISplitted = userIRI.split("/");
     return Number(userIRISplitted[userIRISplitted.length - 1]);
 }
 
-export async function loginUser(email: string, password: string): Promise<{ token: string }> {
-    const response = await fetch(apiUrl + "api/login_check", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ username: email, password: password })
+export async function loginUser(email: string, password: string): Promise<void> {
+    const loginUserResponse = await api.post("api/login_check", {
+        username: email,
+        password: password
     });
-    if (response.ok) {
-        const responseJson = await response.json();
-        const apiToken = responseJson.token;
+    const apiToken = loginUserResponse.data.token;
+    setApiToken(apiToken)
+}
 
-        Cookies.set('apiToken', apiToken, { expires: 7 });
-        return { token: apiToken };
-    } else {
-        return { token: "" };
-    }
+export async function registerUser(userToRegister: UserSaveModel): Promise<void> {
+    await saveUser(userToRegister);
+    await loginUser(userToRegister.email, userToRegister.password);
+}
+
+function setApiToken(apiToken: string): void{
+    localStorage.setItem("apiToken", apiToken);
+}
+
+function removeApiToken(): void {
+    localStorage.removeItem("apiToken");
+}
+
+export function askUserForConnection() {
+    removeApiToken();
+    window.location.href = "/login";
 }
 
 export function disconnectUser(): void {
-    Cookies.remove('apiToken');
-}
-
-export async function registerUser(userToRegister: UserSaveModel): Promise<boolean> {
-    try {
-        const userIRI = await saveUser(userToRegister);
-        if (userIRI == "") {
-            return false;
-        } else {
-            await loginUser(userToRegister.email, userToRegister.password);
-            return true;
-        }
-    } catch (e) {
-        throw e;
-    }
+    removeApiToken();
+    window.location.href = "/";
 }

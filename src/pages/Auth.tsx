@@ -5,7 +5,7 @@ import Login from "../shared/Login";
 import Register from "../shared/Register";
 import { Link } from 'react-router-dom';
 
-const Auth: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
+const Auth: React.FC = () => {
     const [selectedForm, setSelectedForm] = useState<'login' | 'register'>('login');
 
     const handleSwitchForm = (formType: 'login' | 'register') => {
@@ -16,7 +16,7 @@ const Auth: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
         <div className="auth-container">
             <div className="return-link">
                 <Link to="/" className="return-arrow">
-                    <i className="bi bi-arrow-left"></i>
+                    <i className="bi bi-arrow-left me-2"></i>
                     Retour à l'accueil
                 </Link>
             </div>
@@ -35,8 +35,8 @@ const Auth: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
                     Créer son compte
                 </button>
             </div>
-            {selectedForm === 'login' && <Login onLogin={onLogin} />}
-            {selectedForm === 'register' && <Register onLogin={onLogin} />}
+            {selectedForm === 'login' && <Login />}
+            {selectedForm === 'register' && <Register />}
         </div>
     );
 };

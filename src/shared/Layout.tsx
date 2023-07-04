@@ -5,13 +5,12 @@ import Footer from './Footer';
 interface LayoutComponentProps {
   element: React.ReactNode;
   isAuthenticated: boolean;
-  onLogout: () => void;
 }
 
-const Layout: React.FC<LayoutComponentProps> = ({ element, isAuthenticated, onLogout }) => {
+const Layout: React.FC<LayoutComponentProps> = ({ element, isAuthenticated }) => {
   return (
     <>
-      <Navbar isAuthenticated={isAuthenticated} onLogout={onLogout} />
+      <Navbar isAuthenticated={isAuthenticated} />
       <main className='main'>
         <div className='main-content'>
           {element}

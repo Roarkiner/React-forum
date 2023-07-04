@@ -2,9 +2,9 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import "../assets/style/new-topic.css"
 import { saveTopic } from "../services/TopicService";
 import { TopicSaveModel } from "../models/TopicSaveModel";
-import { getConnectedUserIRI } from "../services/AuthService";
+import { askUserForConnection, getConnectedUserIRI } from "../services/AuthService";
 import { useNavigate } from 'react-router-dom';
-import { toast } from "react-toastify";
+import { displayDefaultToastError } from "../services/ToastHelper";
 
 const NewTopic: React.FC = () => {
     const [title, setTitle] = useState("");
@@ -48,24 +48,25 @@ const NewTopic: React.FC = () => {
             return;
         }
 
-        const createdTopicId = await saveTopic(new TopicSaveModel(
-            title,
-            description,
-            getConnectedUserIRI()
-        ));
+        const userIRI = getConnectedUserIRI();
 
-        if (createdTopicId !== undefined) {
-            navigate(`/topic-detail/${createdTopicId}`, { replace: true })
-            setIsLoading(false);
-        } else {
-            toast.error("Un problème est survenu, veuillez rafraichir la page.", {
-                position: toast.POSITION.BOTTOM_RIGHT,
-                autoClose: 3000,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: false
-            });
+        if (userIRI === null) {
+            askUserForConnection();
+            return;
         }
+
+        try {
+            const savedTopic = await saveTopic(new TopicSaveModel(
+                title,
+                description,
+                userIRI
+            ));
+            navigate(`/topic-detail/${savedTopic.topicId}`, { replace: true })
+        } catch (error) {
+            displayDefaultToastError()
+            throw error;
+        }
+        
         setIsLoading(false);
     };
 

@@ -3,14 +3,12 @@ import { disconnectUser } from "../services/AuthService";
 
 interface NavBarComponentProps {
   isAuthenticated: boolean;
-  onLogout: () => void;
 }
 
-const Navbar: React.FC<NavBarComponentProps> = ({ isAuthenticated, onLogout }) => {
+const Navbar: React.FC<NavBarComponentProps> = ({ isAuthenticated }) => {
 
   const handleLogout = () => {
     disconnectUser();
-    onLogout();
   };
 
   return (

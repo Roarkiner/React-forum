@@ -3,14 +3,14 @@ import "../assets/style/topic-detail.css";
 import { useParams } from "react-router-dom";
 import { getTopic } from "../services/TopicService";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteComment, getCommentsForTopicId, saveComment } from "../services/CommentService";
+import { getCommentsForTopicId, saveComment } from "../services/CommentService";
 import TopicDetailCardSkeleton from "../shared/TopicDetailCardSkeleton";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { toast } from "react-toastify";
 import { CommentSaveModel } from "../models/CommentSaveModel";
-import { getConnectedUserIRI, getConnectedUserId } from "../services/AuthService";
+import { askUserForConnection, getConnectedUserIRI, getConnectedUserId } from "../services/AuthService";
 import CommentCardWithDelete from "../shared/CommentCardWithDelete";
 import CommentCard from "../shared/CommentCard";
+import { displayDefaultToastError } from "../services/ToastHelper";
 
 const TopicDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -32,11 +32,21 @@ const TopicDetail: React.FC = () => {
     };
 
     async function getCurrentTopic() {
-        return getTopic(Number(id));
+        try{
+            return getTopic(Number(id));
+        } catch(error) {
+            displayDefaultToastError();
+            throw error;
+        }
     }
 
     async function getCommentsForTopic() {
-        return getCommentsForTopicId(Number(id));
+        try {
+            return getCommentsForTopicId(Number(id));   
+        } catch (error) {
+            displayDefaultToastError();
+            throw error;
+        }
     }
 
     function toggleIsNewCommentVisible() {
@@ -62,34 +72,24 @@ const TopicDetail: React.FC = () => {
             return;
         }
 
+        const userIRI = getConnectedUserIRI();
+
+        if (userIRI === null) {
+            askUserForConnection();
+            return;
+        }
+
         try {
-            const result = await saveComment(new CommentSaveModel(
+            await saveComment(new CommentSaveModel(
                 commentContent,
-                getConnectedUserIRI(),
+                userIRI,
                 topicQuery.data!.topicIRI
             ));
-            if (!result) {
-                toast.error("Un problème est survenu, veuillez rafraichir la page.", {
-                    position: toast.POSITION.BOTTOM_RIGHT,
-                    autoClose: 3000,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: false
-                });
-            } else {
-                queryClient.invalidateQueries({ queryKey: ["comments"] });
-                closeNewComment();
-            }
-        } catch (e) {
-            if (e instanceof Error) {
-                toast.error(e.message, {
-                    position: toast.POSITION.BOTTOM_RIGHT,
-                    autoClose: 3000,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: false
-                });
-            }
+            queryClient.invalidateQueries({ queryKey: ["comments"] });
+            closeNewComment();
+        } catch (error) {
+            displayDefaultToastError();
+            throw error;
         }
 
         setIsLoading(false);

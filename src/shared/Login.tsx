@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { loginUser } from '../services/AuthService';
-import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
+import { displayDefaultToastError } from '../services/ToastHelper';
 
-const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
-  const navigate = useNavigate();
+const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -13,12 +13,16 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const { token } = await loginUser(email, password);
-    if (token !== undefined && token.length > 1) {
-      onLogin();
-      navigate('/');
-    } else {
-      setError('Email ou mot de passe incorrect.');
+    try {
+      await loginUser(email, password);
+      window.location.href = "/";
+    } catch (error) {
+      if (error instanceof AxiosError && error.status === 401)
+        setError('Email ou mot de passe incorrect.');
+      else {
+        displayDefaultToastError();
+        throw error;
+      }
     }
 
     setIsLoading(false);

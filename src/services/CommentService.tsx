@@ -1,15 +1,14 @@
 import { CommentSaveModel } from "../models/CommentSaveModel";
-import { apiUrl } from "./ApiService";
-import { getApiToken, getConnectedUserId } from "./AuthService";
-import { topicApiUrl } from "./TopicService";
+import { api, createUnauthorizedError } from "./ApiService";
 import { getUsernameFromEmail } from "./UserService";
+import { topicPath } from "./TopicService";
+import { getConnectedUserId } from "./AuthService";
 
 const commentPath = "api/comments";
-const commentApiUrl = apiUrl + commentPath;
 
 export async function getCommentsForTopicId(topicId: number): Promise<CommentListItem[]> {
-    const response = await fetch(topicApiUrl + `/${topicId}/comments`);
-    const data = await response.json();
+    const getCommentsResponse = await api.get(`${topicPath}/${topicId}/comments`);
+    const data = getCommentsResponse.data;
     const commentsResponseMapped: CommentListItem[] = data["hydra:member"].map((comment: any): CommentListItem => {
         return {
             commentId: comment.id,
@@ -21,13 +20,13 @@ export async function getCommentsForTopicId(topicId: number): Promise<CommentLis
                 username: getUsernameFromEmail(comment.author.email)
             }
         }
-    })
+    });
     return commentsResponseMapped;
 }
 
-export async function getComment(commentId: number): Promise<CommentListItem> {
-    const response = await fetch(commentApiUrl + `/${commentId}`);
-    const data = await response.json();
+async function getComment(commentId: number): Promise<CommentListItem> {
+    const getCommentResponse = await api.get(`${commentPath}/${commentId}`);
+    const data = getCommentResponse.data;
     const commentResponseMapped: CommentListItem = {
         commentId: data.id,
         content: data.content,
@@ -41,34 +40,26 @@ export async function getComment(commentId: number): Promise<CommentListItem> {
     return commentResponseMapped;
 }
 
-export async function saveComment(commentSaveModel: CommentSaveModel): Promise<boolean> {
-    const apiToken = getApiToken();
-    if (apiToken === undefined || apiToken.length < 1) {
-        throw new Error("Veuillez vous connecter pour ajouter un commentaire.");
+export async function saveComment(commentSaveModel: CommentSaveModel): Promise<CommentListItem> {
+    const saveCommentResponse = await api.post(commentPath, commentSaveModel);
+    const comment = saveCommentResponse.data;
+    const commentWithResponse: CommentListItem = {
+        commentId: comment.id,
+        content: comment.content,
+        creation_date: comment.createdAt,
+        author: {
+            userId: comment.author.id,
+            email: comment.author.email,
+            username: getUsernameFromEmail(comment.author.email)
+        }
     }
-    const reponse = await fetch(commentApiUrl, {
-        method: "POST",
-        headers: {
-            "Authorization": `Bearer ${apiToken}`,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(commentSaveModel)
-    });
-
-    return reponse.ok;
+    return commentWithResponse;
 }
 
-export async function deleteComment(commentId: number): Promise<boolean> {
+export async function deleteComment(commentId: number): Promise<void> {
     const commentToDelete = await getComment(commentId);
-    const apiToken = getApiToken();
-    if (apiToken === undefined || apiToken.length < 1 || getConnectedUserId() !== commentToDelete.author.userId) {
-        throw new Error("Veuillez vous connecter pour ajouter un commentaire.");
+    if (commentToDelete.author.userId !== getConnectedUserId()) {
+        throw createUnauthorizedError();
     }
-    const response = await fetch(commentApiUrl + `/${commentId}`, {
-        method: "DELETE",
-        headers: {
-            "Authorization": `Bearer ${apiToken}`,
-        }
-    });
-    return response.ok;
+    await api.delete(`${commentPath}/${commentId}`);
 }

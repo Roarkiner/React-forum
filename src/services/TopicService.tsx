@@ -1,21 +1,20 @@
 import { TopicSaveModel } from "../models/TopicSaveModel";
 import { getUsernameFromEmail } from "./UserService";
-import { apiUrl } from "./ApiService";
-import { getApiToken, getConnectedUserId } from "./AuthService";
+import { api, createUnauthorizedError } from "./ApiService";
+import { getConnectedUserId } from "./AuthService";
 
-const topicPath = "api/topics";
-export const topicApiUrl = apiUrl + topicPath;
+export const topicPath = "api/topics";
 
 export async function getAllTopics(searchValue: string = "", page: number = 1, author: number = 0): Promise<GetAllTopicResponse> {
     const queryParams = new URLSearchParams({
         name: searchValue,
         page: page.toString(),
         author: author !== 0 ? author.toString() : ""
-    }).toString();
+    });
 
-    const response = await fetch(`${topicApiUrl}?${queryParams}`);
-    const data = await response.json();
-    const topicResponseMapped: TopicListItem[] = data["hydra:member"].map((topic: any): TopicListItem => {
+    const getAllTopicsResponse = await api.get(`${topicPath}?${queryParams}`);
+    const data = await getAllTopicsResponse.data;
+    const getAllTopicsResponseMapped: TopicListItem[] = data["hydra:member"].map((topic: any): TopicListItem => {
         return {
             topicId: topic.id,
             title: topic.name,
@@ -30,15 +29,15 @@ export async function getAllTopics(searchValue: string = "", page: number = 1, a
         };
     });
     return {
-        topicListItems: topicResponseMapped,
+        topicListItems: getAllTopicsResponseMapped,
         numberOfItems: data["hydra:totalItems"]
     };
 }
 
-export async function getTopic(topicId: number) {
-    const response = await fetch(topicApiUrl + `/${topicId}`);
-    const data = await response.json();
-    const topicResponseMapped: TopicDetail = {
+export async function getTopic(topicId: number): Promise<TopicDetail> {
+    const getTopicResponse = await api.get(`${topicPath}/${topicId}`);
+    const data = getTopicResponse.data;
+    const getTopicResponseMapped: TopicDetail = {
         topicIRI: data["@id"],
         topicId: data.id,
         title: data.name,
@@ -50,42 +49,31 @@ export async function getTopic(topicId: number) {
             username: getUsernameFromEmail(data.author.email)
         }
     };
-    return topicResponseMapped;
+    return getTopicResponseMapped;
 }
 
-export async function saveTopic(topicToSave: TopicSaveModel): Promise<number> {
-    const apiToken = getApiToken();
-    if (apiToken === undefined || apiToken.length < 1) {
-        throw new Error('401 Unauthorized');
-    }
-    const response = await fetch(topicApiUrl, {
-        method: "POST",
-        headers: {
-            "Authorization": `Bearer ${apiToken}`,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(topicToSave)
-    });
-
-    if (response.ok) {
-        const topic = await response.json();
-        return topic.id;
-    } else {
-        return 0;
-    }
-}
-
-export async function deleteTopic(topicId: number): Promise<Response> {
-    const topicToDelete = await getTopic(topicId);
-    const apiToken = getApiToken();
-    if (topicToDelete.author.userId !== getConnectedUserId() || apiToken === undefined || apiToken.length < 1) {
-        throw new Error('401 Unauthorized');
-    }
-    const response = await fetch(topicApiUrl + `/${topicId}`, {
-        method: "DELETE",
-        headers: {
-            "Authorization": `Bearer ${apiToken}`,
+export async function saveTopic(topicToSave: TopicSaveModel): Promise<TopicDetail> {
+    const saveTopicResponse = await api.post(topicPath, topicToSave);
+    const data = saveTopicResponse.data;
+    const saveTopicResponseMapped: TopicDetail = {
+        topicIRI: data["@id"],
+        topicId: data.id,
+        title: data.name,
+        description: data.description,
+        creation_date: data.createdAt,
+        author: {
+            userId: data.author.id,
+            email: data.author.email,
+            username: getUsernameFromEmail(data.author.email)
         }
-    });
-    return response;
+    };
+    return saveTopicResponseMapped;
+}
+
+export async function deleteTopic(topicId: number): Promise<void> {
+    const topicToDelete = await getTopic(topicId);
+    if (topicToDelete.author.userId !== getConnectedUserId()) {
+        throw createUnauthorizedError();
+    }
+    await api.delete(`${topicPath}/${topicId}`);
 }
