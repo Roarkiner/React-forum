@@ -95,7 +95,7 @@ export async function deleteTopic(topicId: number): Promise<boolean> {
     const response = await fetch(topicApiUrl + `/${topicId}`, {
         method: "DELETE",
         headers: {
-            "'Authorization": `Bearer ${apiToken}`,
+            "Authorization": `Bearer ${apiToken}`,
         }
     });
     return response.ok;

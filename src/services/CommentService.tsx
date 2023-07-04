@@ -67,7 +67,7 @@ export async function deleteComment(commentId: number): Promise<boolean>{
     const response = await fetch(commentApiUrl + `/${commentId}`, {
         method: "DELETE",
         headers: {
-            "'Authorization": `Bearer ${apiToken}`,
+            "Authorization": `Bearer ${apiToken}`,
         }
     });
     return response.ok;
