@@ -18,6 +18,11 @@ interface TopicListItem {
     commentsCount: number
 }
 
+interface GetAllTopicResponse {
+    topicListItems: TopicListItem[],
+    numberOfItems: number
+}
+
 interface TopicDetail {
     topicId: number,
     title: string,
