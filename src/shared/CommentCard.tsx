@@ -1,6 +1,6 @@
 const CommentCard: React.FC<{ comment: CommentListItem }> = ({ comment }) => {
     return (
-        <div className="d-flex">
+        <div className="d-flex mb-3">
             <div className="card">
                 <div className="card-body">
                     <p className="card-text">{comment.content}</p>

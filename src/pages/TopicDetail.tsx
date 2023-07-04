@@ -76,6 +76,9 @@ const TopicDetail: React.FC = () => {
                     pauseOnHover: true,
                     draggable: false
                 });
+            } else {
+                queryClient.invalidateQueries({ queryKey: ["comments"] });
+                closeNewComment();
             }
         } catch (e) {
             if (e instanceof Error) {
