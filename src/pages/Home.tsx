@@ -73,7 +73,7 @@ const Home: React.FC = () => {
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
                     itemsPerPage={30}
-                    numberOfItems={topicsQuery.data!.numberOfItems}/>
+                    numberOfItems={topicsQuery.data!.numberOfItems} />
             </div>
         </>
     )
