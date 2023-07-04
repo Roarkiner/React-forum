@@ -50,3 +50,7 @@
 .btn-primary {
   color: white !important;
 }
+
+.search-button{
+  border-radius: 0 5px 5px 0;
+}

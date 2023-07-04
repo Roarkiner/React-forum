@@ -6,8 +6,9 @@ import { getApiToken, getConnectedUserId } from "./AuthService";
 const topicPath = "api/topics";
 export const topicApiUrl = apiUrl + topicPath;
 
-export async function getAllTopics(): Promise<TopicListItem[]> {
-    const response = await fetch(topicApiUrl);
+export async function getAllTopics(searchValue: string = "", page: number = 1): Promise<TopicListItem[]> {
+    const queryParams = new URLSearchParams({ name: searchValue, page: page.toString() }).toString();
+    const response = await fetch(`${topicApiUrl}?${queryParams}`);
     const data = await response.json();
     const topicResponseMapped: TopicListItem[] = data["hydra:member"].map((topic: any): TopicListItem => {
         return {
@@ -27,7 +28,8 @@ export async function getAllTopics(): Promise<TopicListItem[]> {
 }
 
 export async function getAllTopicsForUser(userId: number): Promise<TopicListItem[]> {
-    const response = await fetch(topicApiUrl + `?author=${userId}`);
+    const queryParams = new URLSearchParams({ author: userId.toString() }).toString();
+    const response = await fetch(`${topicApiUrl}?${queryParams}`);
     const data = await response.json();
     const topicResponseMapped: TopicListItem[] = data["hydra:member"].map((topic: any): TopicListItem => {
         return {

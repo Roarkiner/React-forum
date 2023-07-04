@@ -3,23 +3,17 @@ import '../assets/style/home.css'
 
 import TopicCard from '../shared/TopicCard';
 import TopicCardSkeleton from '../shared/TopicCardSkeleton';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import SearchBar from '../shared/SearchBar';
 import { useState } from 'react';
+import { getAllTopics } from '../services/TopicService';
 
 const Home: React.FC = () => {
-    const query = useQuery(["topics"], getAllTopicsBySearchValue);
     const [searchValue, setSearchValue] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const query = useQuery(["topics", searchValue], getAllTopicsBySearchValue);
 
-    function getAllTopicsBySearchValue(){
-        
-    }
-
-    function onSearch() {
-        setIsLoading(true);
-        //Faire le call d'Api
-        setIsLoading(false);
+    async function getAllTopicsBySearchValue(): Promise<TopicListItem[]> {
+        return await getAllTopics(searchValue);
     }
 
     if (query.isLoading) {
@@ -46,7 +40,7 @@ const Home: React.FC = () => {
     return (
         <>
             <h1>Les derniers sujets</h1>
-            <SearchBar searchValue={searchValue} setSearchValue={setSearchValue} isLoading={isLoading} onSearch={onSearch} />
+            <SearchBar searchValue={searchValue} setSearchValue={setSearchValue} isLoading={query.isLoading} />
             <div className="add-button">
                 <Link to="/add-topic" className="btn btn-primary">
                     <i className="bi bi-plus-circle h4 m-0 mx-2"></i>
