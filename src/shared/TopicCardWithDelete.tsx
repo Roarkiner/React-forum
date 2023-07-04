@@ -1,6 +1,5 @@
 import TopicCard from "./TopicCard";
 import { deleteTopic } from "../services/TopicService";
-import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { displayDefaultToastError } from "../services/ToastHelper";
 
