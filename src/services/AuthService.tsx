@@ -13,11 +13,11 @@ export function getApiToken(): string | undefined {
 }
 
 export function getConnectedUserIRI(): string {
-    var token = getApiToken();
+    const token = getApiToken();
     if (token === undefined)
         return "";
 
-    var decodedToken: any = jwt_decode(token);
+    const decodedToken: any = jwt_decode(token);
     return decodedToken.user;
 }
 

@@ -41,3 +41,7 @@ a {
   text-decoration: none !important;
   color: rgb(26, 26, 26) !important;
 }
+
+.error {
+  color: red;
+}

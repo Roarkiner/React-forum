@@ -25,6 +25,7 @@
 
 .new-topic-page .form-group {
     margin-bottom: 16px;
+    width: 80%;
 }
 
 .new-topic-page label {
