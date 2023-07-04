@@ -1,13 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { loginUser } from '../services/AuthService';
 import { AxiosError } from 'axios';
-import { displayDefaultToastError } from '../services/ToastHelper';
+import { displayCustomToastError, displayDefaultToastError } from '../services/ToastHelper';
+import { useLocation } from "react-router-dom";
 
 const Login: React.FC = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const displayError: boolean = Boolean(queryParams.get("error")) || false;
+  const redirectUrl: string = queryParams.get("redirectUrl") || "/";
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  
+  useEffect(() => {
+    if (displayError) {
+      displayCustomToastError("Veuillez vous connecter");
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,7 +26,7 @@ const Login: React.FC = () => {
 
     try {
       await loginUser(email, password);
-      window.location.href = "/";
+      window.location.href = redirectUrl;
     } catch (error) {
       if (error instanceof AxiosError && error.status === 401)
         setError('Email ou mot de passe incorrect.');

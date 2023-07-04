@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { askUserForConnection, getApiToken } from "./AuthService";
+import { displayDefaultToastError } from "./ToastHelper";
 
 const apiUrl = "https://ynov-topics-comments.ld-web.net/";
 
@@ -25,6 +26,7 @@ axiosInstance.interceptors.response.use(
         if (error.response?.status === 401) {
             askUserForConnection();
         } else {
+            displayDefaultToastError();
             return Promise.reject(error);
         }
     }

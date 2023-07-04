@@ -51,9 +51,13 @@ function removeApiToken(): void {
     localStorage.removeItem("apiToken");
 }
 
-export function askUserForConnection() {
+export function askUserForConnection(displayError: boolean = true, redirectUrl: string = "") {
     removeApiToken();
-    window.location.href = "/login";
+    const queryParams = new URLSearchParams({
+        error: displayError ? "true" : "",
+        redirectUrl: redirectUrl
+    })
+    window.location.href = `/login?${queryParams}`;
 }
 
 export function disconnectUser(): void {

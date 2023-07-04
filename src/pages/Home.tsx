@@ -61,6 +61,14 @@ const Home: React.FC = () => {
         )
     }
 
+    if (topicsQuery.isError) {
+        return (
+            <div className="topic-detail">
+                <h1>Impossible de charger les sujets.</h1>
+            </div>
+        );
+    }
+
     return (
         <>
             <h1>Les derniers sujets</h1>

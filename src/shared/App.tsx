@@ -22,7 +22,7 @@ const App: React.FC = () => {
     { path: "/login", element: <Auth /> },
     { path: "/my-topics", element: <PrivateRoute element={<Layout element={<MyTopics />} isAuthenticated={isAuthenticatedQuery.data!} />} isAuthenticated={isAuthenticatedQuery.data!} /> },
     { path: "/add-topic", element: <PrivateRoute element={<Layout element={<NewTopic />} isAuthenticated={isAuthenticatedQuery.data!} />} isAuthenticated={isAuthenticatedQuery.data!} /> },
-    { path: "/topic-detail/:id", element: <Layout element={<TopicDetail />} isAuthenticated={isAuthenticatedQuery.data!} /> }
+    { path: "/topic-detail/:id", element: <Layout element={<TopicDetail isAuthenticated={isAuthenticatedQuery.data!} />} isAuthenticated={isAuthenticatedQuery.data!} /> }
   ]);
 
   return routing;

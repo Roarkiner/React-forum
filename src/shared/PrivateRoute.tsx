@@ -9,7 +9,7 @@ const PrivateRoute: React.FC<{ isAuthenticated: boolean, element: React.ReactNod
         {isAuthenticated ?
           <>{element}</>
           :
-          <Navigate to="/login" />
+          <Navigate to={`/login?redirectUrl=${window.location.pathname}`} />
         }
       </>
     )

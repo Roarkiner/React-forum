@@ -12,7 +12,7 @@ import CommentCardWithDelete from "../shared/CommentCardWithDelete";
 import CommentCard from "../shared/CommentCard";
 import { displayDefaultToastError } from "../services/ToastHelper";
 
-const TopicDetail: React.FC = () => {
+const TopicDetail: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }) => {
     const { id } = useParams<{ id: string }>();
     const topicQuery = useQuery(["topic"], getCurrentTopic);
     const commentsQuery = useQuery(["comments"], getCommentsForTopic);
@@ -32,9 +32,9 @@ const TopicDetail: React.FC = () => {
     };
 
     async function getCurrentTopic() {
-        try{
+        try {
             return getTopic(Number(id));
-        } catch(error) {
+        } catch (error) {
             displayDefaultToastError();
             throw error;
         }
@@ -42,7 +42,7 @@ const TopicDetail: React.FC = () => {
 
     async function getCommentsForTopic() {
         try {
-            return getCommentsForTopicId(Number(id));   
+            return getCommentsForTopicId(Number(id));
         } catch (error) {
             displayDefaultToastError();
             throw error;
@@ -50,7 +50,11 @@ const TopicDetail: React.FC = () => {
     }
 
     function toggleIsNewCommentVisible() {
-        setIsNewCommentVisible(!isNewCommentVisible);
+        if (!isNewCommentVisible && !isAuthenticated) {
+            askUserForConnection(false, window.location.pathname);
+        } else {
+            setIsNewCommentVisible(!isNewCommentVisible);
+        }
     }
 
     function closeNewComment() {
@@ -119,6 +123,14 @@ const TopicDetail: React.FC = () => {
                 </div>
             </div>
         )
+    }
+
+    if (topicQuery.isError || commentsQuery.isError) {
+        return (
+            <div className="topic-detail">
+                <h1>Impossible de charger le sujet et ses commentaires.</h1>
+            </div>
+        );
     }
 
     return (
