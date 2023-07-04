@@ -7,7 +7,7 @@ import { getUsernameFromEmail } from "./UserService";
 const commentPath = "api/comments";
 const commentApiUrl = apiUrl + commentPath;
 
-export async function getCommentsForTopicId(topicId: number): Promise<CommentListItem[]>{
+export async function getCommentsForTopicId(topicId: number): Promise<CommentListItem[]> {
     const response = await fetch(topicApiUrl + `/${topicId}/comments`);
     const data = await response.json();
     const commentsResponseMapped: CommentListItem[] = data["hydra:member"].map((comment: any): CommentListItem => {
@@ -25,7 +25,7 @@ export async function getCommentsForTopicId(topicId: number): Promise<CommentLis
     return commentsResponseMapped;
 }
 
-export async function getComment(commentId: number): Promise<CommentListItem>{
+export async function getComment(commentId: number): Promise<CommentListItem> {
     const response = await fetch(commentApiUrl + `/${commentId}`);
     const data = await response.json();
     const commentResponseMapped: CommentListItem = {
@@ -41,7 +41,7 @@ export async function getComment(commentId: number): Promise<CommentListItem>{
     return commentResponseMapped;
 }
 
-export async function saveComment(commentSaveModel: CommentSaveModel): Promise<boolean>{
+export async function saveComment(commentSaveModel: CommentSaveModel): Promise<boolean> {
     const apiToken = getApiToken();
     if (apiToken === undefined || apiToken.length < 1) {
         throw new Error("Veuillez vous connecter pour ajouter un commentaire.");
@@ -58,7 +58,7 @@ export async function saveComment(commentSaveModel: CommentSaveModel): Promise<b
     return reponse.ok;
 }
 
-export async function deleteComment(commentId: number): Promise<boolean>{
+export async function deleteComment(commentId: number): Promise<boolean> {
     const commentToDelete = await getComment(commentId);
     const apiToken = getApiToken();
     if (apiToken === undefined || apiToken.length < 1 || getConnectedUserId() !== commentToDelete.author.userId) {

@@ -43,7 +43,7 @@ const NewTopic: React.FC = () => {
         if (description.trim() === "")
             setDescriptionError("Veuillez entrer une description.");
 
-        if (titleError !== "" || descriptionError !== ""){
+        if (titleError !== "" || descriptionError !== "") {
             setIsLoading(false);
             return;
         }

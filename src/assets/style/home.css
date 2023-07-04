@@ -55,7 +55,7 @@
   border-radius: 0 5px 5px 0;
 }
 
-.pagination-container button.active{
+.pagination-container button.active {
   background-color: rgba(0, 0, 0, 0.1);
   font-weight: bold;
 }

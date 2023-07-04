@@ -43,7 +43,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchValue, setSearchValue, isLo
                     <i className="bi bi-search"></i>
                 </button>
             </div>
-            { localSearchValue.length !== 0 &&
+            {localSearchValue.length !== 0 &&
                 <div className="ms-3">
                     <button disabled={isLoading} onClick={clearSearchValue} className="btn btn-danger">
                         <i className="bi bi-filter"></i>

@@ -1,16 +1,16 @@
-.topic-detail .card{
+.topic-detail .card {
     width: 90%;
 }
 
-.topic-detail h1{
+.topic-detail h1 {
     font-size: 2em;
 }
 
-.topic-detail .topic-header{
-    background-color: rgba(33,37,41,0.03);
+.topic-detail .topic-header {
+    background-color: rgba(33, 37, 41, 0.03);
     border-radius: 5px;
 }
 
-.topic-detail form{
+.topic-detail form {
     width: 80%;
 }

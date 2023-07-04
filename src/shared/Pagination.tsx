@@ -9,14 +9,14 @@ const Pagination: React.FC<PaginationProps> = ({ numberOfItems, itemsPerPage, cu
     const numberOfPages = Math.ceil(numberOfItems / itemsPerPage);
 
     function changePage(pageNumber: number) {
-        if(pageNumber !== currentPage)
+        if (pageNumber !== currentPage)
             setCurrentPage(pageNumber);
     }
 
     return (
         <div className="pagination-container">
-            { currentPage > 1 &&
-                <button onClick={() => changePage(currentPage -1)} className="btn btn-outline-secondary">Précédent</button>
+            {currentPage > 1 &&
+                <button onClick={() => changePage(currentPage - 1)} className="btn btn-outline-secondary">Précédent</button>
             }
             {(() => {
                 const elements = [];
@@ -30,7 +30,7 @@ const Pagination: React.FC<PaginationProps> = ({ numberOfItems, itemsPerPage, cu
                 }
                 return elements;
             })()}
-            { currentPage !== numberOfPages &&
+            {currentPage !== numberOfPages &&
                 <button onClick={() => changePage(currentPage + 1)} className="btn btn-outline-secondary">Suivant</button>
             }
         </div>

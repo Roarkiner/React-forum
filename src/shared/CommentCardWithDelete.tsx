@@ -1,6 +1,5 @@
 import { toast } from "react-toastify";
 import { deleteComment } from "../services/CommentService";
-import CommentCard from "./CommentCard";
 
 interface CommentCardWithDeleteProps {
     comment: CommentListItem,
