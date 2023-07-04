@@ -6,7 +6,7 @@ import { getApiToken, getConnectedUserId } from "./AuthService";
 const topicPath = "api/topics";
 export const topicApiUrl = apiUrl + topicPath;
 
-export async function getAllTopics(searchValue: string = "", page: number = 1, author: number = 0): Promise<TopicListItem[]> {
+export async function getAllTopics(searchValue: string = "", page: number = 1, author: number = 0): Promise<GetAllTopicResponse> {
     const queryParams = new URLSearchParams({
         name: searchValue,
         page: page.toString(),
@@ -29,7 +29,10 @@ export async function getAllTopics(searchValue: string = "", page: number = 1, a
             commentsCount: topic.commentsCount
         };
     });
-    return topicResponseMapped;
+    return {
+        topicListItems: topicResponseMapped,
+        numberOfItems: data["hydra:totalItems"]
+    };
 }
 
 export async function getTopic(topicId: number) {

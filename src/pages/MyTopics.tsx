@@ -9,19 +9,22 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import TopicCardWithDelete from '../shared/TopicCardWithDelete';
 import { useState } from 'react';
 import SearchBar from '../shared/SearchBar';
+import Pagination from '../shared/Pagination';
 
 const MyTopics: React.FC = () => {
     const queryClient = useQueryClient();
     const [searchValue, setSearchValue] = useState("");
-    const myTopicsQuery = useQuery(["myTopics", searchValue], getAllTopicsForCurrentUser);
+    const [currentPage, setCurrentPage] = useState(1);
+    const myTopicsQuery = useQuery(["myTopics", searchValue, currentPage], getAllTopicsForCurrentUser);
 
-    async function getAllTopicsForCurrentUser(): Promise<TopicListItem[]> {
+    async function getAllTopicsForCurrentUser(): Promise<GetAllTopicResponse> {
         const userId = getConnectedUserId();
-        return await getAllTopics(searchValue, 1, userId);
+        return await getAllTopics(searchValue, currentPage, userId);
     }
 
     function refreshTopicList(): void {
         queryClient.invalidateQueries({ queryKey: ["myTopics"] });
+        setCurrentPage(1);
     }
 
     if (myTopicsQuery.isLoading) {
@@ -43,7 +46,7 @@ const MyTopics: React.FC = () => {
         )
     }
 
-    if (myTopicsQuery.data!.length == 0 && searchValue.length === 0) {
+    if (myTopicsQuery.data!.topicListItems.length == 0 && searchValue.length === 0) {
         return (
             <>
                 <h1>Mes sujets</h1>
@@ -58,7 +61,7 @@ const MyTopics: React.FC = () => {
         )
     }
 
-    if (myTopicsQuery.data!.length == 0 && searchValue.length !== 0) {
+    if (myTopicsQuery.data!.topicListItems.length == 0 && searchValue.length !== 0) {
         return (
             <>
                 <h1>Mes sujets</h1>
@@ -85,7 +88,14 @@ const MyTopics: React.FC = () => {
                 </Link>
             </div>
             <div className="topic-card-list">
-                {myTopicsQuery.data!.map((t) => (<TopicCardWithDelete isLoading={myTopicsQuery.isLoading} deleteCallback={refreshTopicList} key={t.topicId} topic={t} />))}
+                {myTopicsQuery.data!.topicListItems.map((t) => (<TopicCardWithDelete isLoading={myTopicsQuery.isLoading} deleteCallback={refreshTopicList} key={t.topicId} topic={t} />))}
+            </div>
+            <div className="d-flex justify-content-center">
+                <Pagination
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    itemsPerPage={30}
+                    numberOfItems={myTopicsQuery.data!.numberOfItems} />
             </div>
         </>
     )

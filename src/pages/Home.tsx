@@ -7,13 +7,15 @@ import { useQuery } from '@tanstack/react-query';
 import SearchBar from '../shared/SearchBar';
 import { useState } from 'react';
 import { getAllTopics } from '../services/TopicService';
+import Pagination from '../shared/Pagination';
 
 const Home: React.FC = () => {
     const [searchValue, setSearchValue] = useState("");
-    const topicsQuery = useQuery(["topics", searchValue], getAllTopicsBySearchValue);
+    const [currentPage, setCurrentPage] = useState(1);
+    const topicsQuery = useQuery(["topics", searchValue, currentPage], getAllTopicsBySearchValue);
 
-    async function getAllTopicsBySearchValue(): Promise<TopicListItem[]> {
-        return await getAllTopics(searchValue);
+    async function getAllTopicsBySearchValue(): Promise<GetAllTopicResponse> {
+        return await getAllTopics(searchValue, currentPage);
     }
 
     if (topicsQuery.isLoading) {
@@ -37,7 +39,7 @@ const Home: React.FC = () => {
         )
     }
 
-    if(topicsQuery.data!.length === 0 && searchValue.length !== 0) {
+    if (topicsQuery.data!.topicListItems.length === 0 && searchValue.length !== 0) {
         return (
             <>
                 <h1>Les derniers sujets</h1>
@@ -64,7 +66,14 @@ const Home: React.FC = () => {
                 </Link>
             </div>
             <div className="topic-card-list">
-                {topicsQuery.data!.map((t) => (<TopicCard key={t.topicId} topic={t} />))}
+                {topicsQuery.data!.topicListItems.map((t) => (<TopicCard key={t.topicId} topic={t} />))}
+            </div>
+            <div className="d-flex justify-content-center mt-3 p-3 border-top">
+                <Pagination
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    itemsPerPage={30}
+                    numberOfItems={topicsQuery.data!.numberOfItems}/>
             </div>
         </>
     )
