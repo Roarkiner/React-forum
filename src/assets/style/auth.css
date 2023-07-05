@@ -1,7 +1,7 @@
 .return-link {
     margin-bottom: 1rem;
     font-size: larger;
-    position: fixed;
+    position: absolute;
     top: 10px;
     left: 10px;
 }
@@ -16,10 +16,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
     background-color: #bff3ff;
     text-align: center;
+    padding: 50px;
 }
 
 .form-switch-auth {
