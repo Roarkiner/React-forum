@@ -6,10 +6,10 @@ import { getConnectedUserId } from "./AuthService";
 
 const commentPath = "api/comments";
 
-export async function getCommentsForTopicId(topicId: number): Promise<CommentListItem[]> {
-    const getCommentsResponse = await api.get(`${topicPath}/${topicId}/comments`);
+export async function getCommentsForTopicId(topicId: number, page: number = 1): Promise<GetAllComments> {
+    const getCommentsResponse = await api.get(`${topicPath}/${topicId}/comments?page=${page}`);
     const data = getCommentsResponse.data;
-    const commentsResponseMapped: CommentListItem[] = data["hydra:member"].map((comment: any): CommentListItem => {
+    const getCommentsResponseMapped: CommentListItem[] = data["hydra:member"].map((comment: any): CommentListItem => {
         return {
             commentId: comment.id,
             content: comment.content,
@@ -21,7 +21,10 @@ export async function getCommentsForTopicId(topicId: number): Promise<CommentLis
             }
         }
     });
-    return commentsResponseMapped;
+    return {
+        commentListItems: getCommentsResponseMapped,
+        numberOfItems: data["hydra:totalItems"]
+    };
 }
 
 async function getComment(commentId: number): Promise<CommentListItem> {

@@ -23,6 +23,11 @@ interface GetAllTopicResponse {
     numberOfItems: number
 }
 
+interface GetAllComments {
+    commentListItems: CommentListItem[],
+    numberOfItems: number
+}
+
 interface TopicDetail {
     topicIRI: string,
     topicId: number,
@@ -40,7 +45,7 @@ interface CommentListItem {
 }
 
 class AlreadyUsedError extends Error {
-    constructor(message: string){
+    constructor(message: string) {
         super(message);
         this.name = "AlreadyUsedError";
     }

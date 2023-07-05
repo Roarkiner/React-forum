@@ -11,16 +11,18 @@ import { askUserForConnection, getConnectedUserIRI, getConnectedUserId } from ".
 import CommentCardWithDelete from "../shared/CommentCardWithDelete";
 import CommentCard from "../shared/CommentCard";
 import { displayDefaultToastError } from "../services/ToastHelper";
+import Pagination from "../shared/Pagination";
 
 const TopicDetail: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }) => {
     const { id } = useParams<{ id: string }>();
-    const topicQuery = useQuery(["topic"], getCurrentTopic);
-    const commentsQuery = useQuery(["comments"], getCommentsForTopic);
+    const queryClient = useQueryClient();
+    const [currentPage, setCurrentPage] = useState(1);
     const [isNewCommentVisible, setIsNewCommentVisible] = useState(false);
     const [commentContent, setCommentContent] = useState("");
     const [commentContentError, setCommentContentError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const queryClient = useQueryClient();
+    const commentsQuery = useQuery(["comments", currentPage], getCommentsForTopic);
+    const topicQuery = useQuery(["topic"], getCurrentTopic);
 
     const handleCommentContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         if (commentContentError !== "") {
@@ -42,7 +44,7 @@ const TopicDetail: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }
 
     async function getCommentsForTopic() {
         try {
-            return getCommentsForTopicId(Number(id));
+            return getCommentsForTopicId(Number(id), currentPage);
         } catch (error) {
             displayDefaultToastError();
             throw error;
@@ -166,9 +168,9 @@ const TopicDetail: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }
                     <span>Ajouter un commentaire...</span>
                 </button>
             }
-            {commentsQuery.data!.length !== 0 ?
+            {commentsQuery.data!.commentListItems.length !== 0 ?
                 <div className="mt-3">
-                    {commentsQuery.data!.map((comment) => (
+                    {commentsQuery.data!.commentListItems.map((comment) => (
                         <div key={comment.commentId}>
                             {comment.author.userId == getConnectedUserId() ?
                                 <CommentCardWithDelete
@@ -186,6 +188,13 @@ const TopicDetail: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }
                 :
                 <h4 className="mt-3">Aucun commentaire pour l'instant</h4>
             }
+            <div className="d-flex justify-content-center mt-3 p-3 border-top">
+                <Pagination
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    itemsPerPage={30}
+                    numberOfItems={commentsQuery.data!.numberOfItems} />
+            </div>
         </div>
     )
 }
