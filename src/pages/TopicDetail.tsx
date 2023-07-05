@@ -170,31 +170,33 @@ const TopicDetail: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }
             }
             {commentsQuery.data!.commentListItems.length !== 0 ?
                 <div className="mt-3">
-                    {commentsQuery.data!.commentListItems.map((comment) => (
-                        <div key={comment.commentId}>
-                            {comment.author.userId == getConnectedUserId() ?
-                                <CommentCardWithDelete
-                                    comment={comment}
-                                    isLoading={isLoading}
-                                    setIsLoading={setIsLoading}
-                                    onDelete={handleCommentDelete}
-                                />
-                                :
-                                <CommentCard comment={comment} />
-                            }
-                        </div>
-                    ))}
+                    <div>
+                        {commentsQuery.data!.commentListItems.map((comment) => (
+                            <div key={comment.commentId}>
+                                {comment.author.userId == getConnectedUserId() ?
+                                    <CommentCardWithDelete
+                                        comment={comment}
+                                        isLoading={isLoading}
+                                        setIsLoading={setIsLoading}
+                                        onDelete={handleCommentDelete}
+                                    />
+                                    :
+                                    <CommentCard comment={comment} />
+                                }
+                            </div>
+                        ))}
+                    </div>
+                    <div className="d-flex justify-content-center mt-3 p-3 border-top">
+                        <Pagination
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage}
+                            itemsPerPage={30}
+                            numberOfItems={commentsQuery.data!.numberOfItems} />
+                    </div>
                 </div>
                 :
                 <h4 className="mt-3">Aucun commentaire pour l'instant</h4>
             }
-            <div className="d-flex justify-content-center mt-3 p-3 border-top">
-                <Pagination
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                    itemsPerPage={30}
-                    numberOfItems={commentsQuery.data!.numberOfItems} />
-            </div>
         </div>
     )
 }

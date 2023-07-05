@@ -3,6 +3,7 @@ import { registerUser } from '../services/AuthService';
 import { UserSaveModel } from '../models/UserSaveModel';
 import { toast } from 'react-toastify';
 import { displayDefaultToastError } from '../services/ToastHelper';
+import { EmailAlreadyUsedError } from './EmailAlreadyUsedError';
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -75,7 +76,7 @@ const Register: React.FC = () => {
       await registerUser(new UserSaveModel(email, password));
       window.location.href = "/";
     } catch (error) {
-      if (error instanceof AlreadyUsedError) {
+      if (error instanceof EmailAlreadyUsedError) {
         toast.error(error.message, {
           position: toast.POSITION.BOTTOM_RIGHT,
           autoClose: 3000,

@@ -106,7 +106,7 @@ const MyTopics: React.FC = () => {
             <div className="topic-card-list">
                 {myTopicsQuery.data!.topicListItems.map((t) => (<TopicCardWithDelete isLoading={myTopicsQuery.isLoading} deleteCallback={refreshTopicList} key={t.topicId} topic={t} />))}
             </div>
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-center mt-3 p-3 border-top">
                 <Pagination
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}

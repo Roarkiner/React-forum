@@ -1,4 +1,5 @@
 import { UserSaveModel } from "../models/UserSaveModel";
+import { EmailAlreadyUsedError } from "../shared/EmailAlreadyUsedError";
 import { api } from "./ApiService";
 
 let userPath = "api/users";
@@ -27,7 +28,7 @@ export async function getUserById(userId: number): Promise<LightUser> {
 
 export async function saveUser(userToSave: UserSaveModel): Promise<LightUser> {
     if (await isEmailAlreadyUsed(userToSave.email)) {
-        throw new AlreadyUsedError("Cet email est déjà utilisé.");
+        throw new EmailAlreadyUsedError("Cet email est déjà utilisé.");
     }
     const saveUserResponse = await api.post(userPath, userToSave);
     const data = saveUserResponse.data;
