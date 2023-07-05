@@ -3,24 +3,26 @@ import "../assets/style/topic-detail.css";
 import { useParams } from "react-router-dom";
 import { getTopic } from "../services/TopicService";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteComment, getCommentsForTopicId, saveComment } from "../services/CommentService";
+import { getCommentsForTopicId, saveComment } from "../services/CommentService";
 import TopicDetailCardSkeleton from "../shared/TopicDetailCardSkeleton";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { toast } from "react-toastify";
 import { CommentSaveModel } from "../models/CommentSaveModel";
-import { getConnectedUserIRI, getConnectedUserId } from "../services/AuthService";
+import { askUserForConnection, getConnectedUserIRI, getConnectedUserId } from "../services/AuthService";
 import CommentCardWithDelete from "../shared/CommentCardWithDelete";
 import CommentCard from "../shared/CommentCard";
+import { displayDefaultToastError } from "../services/ToastHelper";
+import Pagination from "../shared/Pagination";
 
-const TopicDetail: React.FC = () => {
+const TopicDetail: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }) => {
     const { id } = useParams<{ id: string }>();
-    const topicQuery = useQuery(["topic"], getCurrentTopic);
-    const commentsQuery = useQuery(["comments"], getCommentsForTopic);
+    const queryClient = useQueryClient();
+    const [currentPage, setCurrentPage] = useState(1);
     const [isNewCommentVisible, setIsNewCommentVisible] = useState(false);
     const [commentContent, setCommentContent] = useState("");
     const [commentContentError, setCommentContentError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const queryClient = useQueryClient();
+    const commentsQuery = useQuery(["comments", currentPage], getCommentsForTopic);
+    const topicQuery = useQuery(["topic"], getCurrentTopic);
 
     const handleCommentContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         if (commentContentError !== "") {
@@ -32,15 +34,29 @@ const TopicDetail: React.FC = () => {
     };
 
     async function getCurrentTopic() {
-        return getTopic(Number(id));
+        try {
+            return getTopic(Number(id));
+        } catch (error) {
+            displayDefaultToastError();
+            throw error;
+        }
     }
 
     async function getCommentsForTopic() {
-        return getCommentsForTopicId(Number(id));
+        try {
+            return getCommentsForTopicId(Number(id), currentPage);
+        } catch (error) {
+            displayDefaultToastError();
+            throw error;
+        }
     }
 
     function toggleIsNewCommentVisible() {
-        setIsNewCommentVisible(!isNewCommentVisible);
+        if (!isNewCommentVisible && !isAuthenticated) {
+            askUserForConnection(false, window.location.pathname);
+        } else {
+            setIsNewCommentVisible(!isNewCommentVisible);
+        }
     }
 
     function closeNewComment() {
@@ -62,34 +78,24 @@ const TopicDetail: React.FC = () => {
             return;
         }
 
+        const userIRI = getConnectedUserIRI();
+
+        if (userIRI === null) {
+            askUserForConnection();
+            return;
+        }
+
         try {
-            const result = await saveComment(new CommentSaveModel(
+            await saveComment(new CommentSaveModel(
                 commentContent,
-                getConnectedUserIRI(),
+                userIRI,
                 topicQuery.data!.topicIRI
             ));
-            if (!result) {
-                toast.error("Un problème est survenu, veuillez rafraichir la page.", {
-                    position: toast.POSITION.BOTTOM_RIGHT,
-                    autoClose: 3000,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: false
-                });
-            } else {
-                queryClient.invalidateQueries({ queryKey: ["comments"] });
-                closeNewComment();
-            }
-        } catch (e) {
-            if (e instanceof Error) {
-                toast.error(e.message, {
-                    position: toast.POSITION.BOTTOM_RIGHT,
-                    autoClose: 3000,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: false
-                });
-            }
+            queryClient.invalidateQueries({ queryKey: ["comments"] });
+            closeNewComment();
+        } catch (error) {
+            displayDefaultToastError();
+            throw error;
         }
 
         setIsLoading(false);
@@ -119,6 +125,14 @@ const TopicDetail: React.FC = () => {
                 </div>
             </div>
         )
+    }
+
+    if (topicQuery.isError || commentsQuery.isError) {
+        return (
+            <div className="topic-detail">
+                <h1>Impossible de charger le sujet et ses commentaires.</h1>
+            </div>
+        );
     }
 
     return (
@@ -154,22 +168,31 @@ const TopicDetail: React.FC = () => {
                     <span>Ajouter un commentaire...</span>
                 </button>
             }
-            {commentsQuery.data!.length !== 0 ?
+            {commentsQuery.data!.commentListItems.length !== 0 ?
                 <div className="mt-3">
-                    {commentsQuery.data!.map((comment) => (
-                        <div key={comment.commentId}>
-                            {comment.author.userId == getConnectedUserId() ?
-                                <CommentCardWithDelete
-                                    comment={comment}
-                                    isLoading={isLoading}
-                                    setIsLoading={setIsLoading}
-                                    onDelete={handleCommentDelete}
-                                />
-                                :
-                                <CommentCard comment={comment} />
-                            }
-                        </div>
-                    ))}
+                    <div>
+                        {commentsQuery.data!.commentListItems.map((comment) => (
+                            <div key={comment.commentId}>
+                                {comment.author.userId == getConnectedUserId() ?
+                                    <CommentCardWithDelete
+                                        comment={comment}
+                                        isLoading={isLoading}
+                                        setIsLoading={setIsLoading}
+                                        onDelete={handleCommentDelete}
+                                    />
+                                    :
+                                    <CommentCard comment={comment} />
+                                }
+                            </div>
+                        ))}
+                    </div>
+                    <div className="d-flex justify-content-center mt-3 p-3 border-top">
+                        <Pagination
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage}
+                            itemsPerPage={30}
+                            numberOfItems={commentsQuery.data!.numberOfItems} />
+                    </div>
                 </div>
                 :
                 <h4 className="mt-3">Aucun commentaire pour l'instant</h4>

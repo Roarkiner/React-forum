@@ -23,6 +23,11 @@ interface GetAllTopicResponse {
     numberOfItems: number
 }
 
+interface GetAllComments {
+    commentListItems: CommentListItem[],
+    numberOfItems: number
+}
+
 interface TopicDetail {
     topicIRI: string,
     topicId: number,

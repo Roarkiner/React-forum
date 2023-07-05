@@ -8,6 +8,7 @@ import SearchBar from '../shared/SearchBar';
 import { useState } from 'react';
 import { getAllTopics } from '../services/TopicService';
 import Pagination from '../shared/Pagination';
+import { displayDefaultToastError } from '../services/ToastHelper';
 
 const Home: React.FC = () => {
     const [searchValue, setSearchValue] = useState("");
@@ -15,7 +16,12 @@ const Home: React.FC = () => {
     const topicsQuery = useQuery(["topics", searchValue, currentPage], getAllTopicsBySearchValue);
 
     async function getAllTopicsBySearchValue(): Promise<GetAllTopicResponse> {
-        return await getAllTopics(searchValue, currentPage);
+        try {
+            return await getAllTopics(searchValue, currentPage);
+        } catch (error) {
+            displayDefaultToastError();
+            throw error;
+        }
     }
 
     if (topicsQuery.isLoading) {
@@ -53,6 +59,14 @@ const Home: React.FC = () => {
                 <h4>Aucun sujet ne correspond à votre recherche.</h4>
             </>
         )
+    }
+
+    if (topicsQuery.isError) {
+        return (
+            <div className="topic-detail">
+                <h1>Impossible de charger les sujets.</h1>
+            </div>
+        );
     }
 
     return (

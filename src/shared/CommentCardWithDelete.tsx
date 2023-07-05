@@ -1,5 +1,5 @@
-import { toast } from "react-toastify";
 import { deleteComment } from "../services/CommentService";
+import { displayDefaultToastError } from "../services/ToastHelper";
 
 interface CommentCardWithDeleteProps {
     comment: CommentListItem,
@@ -11,18 +11,15 @@ interface CommentCardWithDeleteProps {
 const CommentCardWithDelete: React.FC<CommentCardWithDeleteProps> = ({ comment, isLoading, setIsLoading, onDelete }) => {
     async function handleCommentDelete() {
         setIsLoading(true);
-        const result = await deleteComment(comment.commentId);
-        if (result) {
+        
+        try {
+            await deleteComment(comment.commentId);
             onDelete();
-        } else {
-            toast.error("Un problème est survenu, veuillez rafraichir la page.", {
-                position: toast.POSITION.BOTTOM_RIGHT,
-                autoClose: 3000,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: false
-            });
+        } catch (error) {
+            displayDefaultToastError();
+            throw error;
         }
+
         setIsLoading(false);
     }
 

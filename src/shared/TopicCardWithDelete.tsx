@@ -1,7 +1,7 @@
 import TopicCard from "./TopicCard";
 import { deleteTopic } from "../services/TopicService";
-import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { displayDefaultToastError } from "../services/ToastHelper";
 
 interface TopicCardWithDeleteProps {
     topic: TopicListItem,
@@ -12,17 +12,13 @@ interface TopicCardWithDeleteProps {
 const TopicCardWithDelete: React.FC<TopicCardWithDeleteProps> = ({ topic, deleteCallback, isLoading }) => {
 
     async function handleTopicDelete() {
-        const result = await deleteTopic(topic.topicId);
-        if (result)
+        try{
+            await deleteTopic(topic.topicId);
             deleteCallback();
-        else
-            toast.error("Un problème est survenu, veuillez rafraichir la page.", {
-                position: toast.POSITION.BOTTOM_RIGHT,
-                autoClose: 3000,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: false
-            });
+        } catch(error) {
+            displayDefaultToastError();
+            throw error;
+        }
     }
 
     return (

@@ -1,24 +1,39 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { loginUser } from '../services/AuthService';
-import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
+import { displayCustomToastError, displayDefaultToastError } from '../services/ToastHelper';
+import { useLocation } from "react-router-dom";
 
-const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
-  const navigate = useNavigate();
+const Login: React.FC = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const displayError: boolean = Boolean(queryParams.get("error")) || false;
+  const redirectUrl: string = queryParams.get("redirectUrl") || "/";
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  
+  useEffect(() => {
+    if (displayError) {
+      displayCustomToastError("Veuillez vous connecter");
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const { token } = await loginUser(email, password);
-    if (token !== undefined && token.length > 1) {
-      onLogin();
-      navigate('/');
-    } else {
-      setError('Email ou mot de passe incorrect.');
+    try {
+      await loginUser(email, password);
+      window.location.href = redirectUrl;
+    } catch (error) {
+      if (error instanceof AxiosError && error.status === 401)
+        setError('Email ou mot de passe incorrect.');
+      else {
+        displayDefaultToastError();
+        throw error;
+      }
     }
 
     setIsLoading(false);
