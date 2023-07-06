@@ -11,7 +11,6 @@ const Login: React.FC = () => {
   const redirectUrl: string = queryParams.get("redirectUrl") || "/";
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
@@ -28,12 +27,11 @@ const Login: React.FC = () => {
       await loginUser(email, password);
       window.location.href = redirectUrl;
     } catch (error) {
-      if (error instanceof AxiosError && error.status === 401)
-        setError('Email ou mot de passe incorrect.');
-      else {
+      if (!(error instanceof AxiosError) || (error.response?.data.message !== "Invalid credentials.")) {
         displayDefaultToastError();
-        throw error;
       }
+      setIsLoading(false);
+      throw error;
     }
 
     setIsLoading(false);
@@ -42,7 +40,6 @@ const Login: React.FC = () => {
   return (
     <>
       <h2>Se connecter</h2>
-      {error && <p className="error">{error}</p>}
       <div className="input-group">
         <div className="form-group">
           <label htmlFor="email">Email</label>

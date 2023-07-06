@@ -35,7 +35,7 @@ export async function loginUser(email: string, password: string): Promise<void> 
         password: password
     });
     const apiToken = loginUserResponse.data.token;
-    setApiToken(apiToken)
+    setApiToken(apiToken);
 }
 
 export async function registerUser(userToRegister: UserSaveModel): Promise<void> {
@@ -56,7 +56,7 @@ export function askUserForConnection(displayError: boolean = true, redirectUrl: 
     const queryParams = new URLSearchParams({
         error: displayError ? "true" : "",
         redirectUrl: redirectUrl
-    })
+    });
     window.location.href = `/login?${queryParams}`;
 }
 
