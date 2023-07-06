@@ -80,14 +80,14 @@ const Home: React.FC = () => {
                 </Link>
             </div>
             <div className="topic-card-list">
-                {topicsQuery.data!.topicListItems.map((t) => (<TopicCard key={t.topicId} topic={t} />))}
+                {topicsQuery.data.topicListItems.map((t) => (<TopicCard key={t.topicId} topic={t} />))}
             </div>
             <div className="d-flex justify-content-center mt-3 p-3 border-top">
                 <Pagination
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
                     itemsPerPage={30}
-                    numberOfItems={topicsQuery.data!.numberOfItems} />
+                    numberOfItems={topicsQuery.data.numberOfItems} />
             </div>
         </>
     )

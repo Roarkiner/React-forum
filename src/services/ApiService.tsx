@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { askUserForConnection, getApiToken } from "./AuthService";
-import { displayCustomToastError, displayDefaultToastError } from "./ToastHelper";
+import { displayCustomToastError } from "./ToastHelper";
 
 const apiUrl = "https://ynov-topics-comments.ld-web.net/";
 

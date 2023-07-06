@@ -16,7 +16,7 @@ const Navbar: React.FC<NavBarComponentProps> = ({ isAuthenticated }) => {
       <nav className="main-navbar">
         <ul>
           <li><Link to="/"><h3>Accueil</h3></Link></li>
-          {isAuthenticated == true &&
+          {isAuthenticated &&
             <li><Link to="/my-topics"><h3>Mes sujets</h3></Link></li>
           }
         </ul>

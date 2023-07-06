@@ -8,7 +8,7 @@ const Login: React.FC = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const displayError: boolean = Boolean(queryParams.get("error")) || false;
-  const redirectUrl: string = queryParams.get("redirectUrl") || "/";
+  const redirectUrl: string = queryParams.get("redirectUrl") ?? "/";
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
