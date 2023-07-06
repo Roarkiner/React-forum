@@ -3,47 +3,66 @@ import "../assets/style/new-topic.css"
 import { saveTopic } from "../services/TopicService";
 import { TopicSaveModel } from "../models/TopicSaveModel";
 import { askUserForConnection, getConnectedUserIRI } from "../services/AuthService";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { displayDefaultToastError } from "../services/ToastHelper";
 
 const NewTopic: React.FC = () => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [titleError, setTitleError] = useState("");
-    const [descriptionError, setDescriptionError] = useState("");
+    const [titleError, setTitleError] = useState(false);
+    const [descriptionError, setDescriptionError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
 
-    const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        if (titleError !== "") {
-            if (title.trim() !== "") {
-                setTitleError("");
-            }
+    function validateTitle(): boolean {
+        return title.trim() !== "";
+    }
+
+    function validateDescription(): boolean {
+        return description.trim() !== "";
+    }
+
+    function validateInputsThenSetErrors(): boolean {
+        const isTitleValid = validateTitle();
+        const isDescriptionValid = validateDescription();
+
+        setTitleError(!isTitleValid);
+        setDescriptionError(!isDescriptionValid);
+
+        return isTitleValid && isDescriptionValid;
+    }
+
+    function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
+        const inputValue = e.target.value;
+        if(inputValue.trim() !== "") {
+            setTitleError(false);
         }
-        setTitle(e.target.value);
+        setTitle(inputValue);
     };
 
-    const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        if (descriptionError !== "") {
-            if (description.trim() !== "") {
-                setDescriptionError("");
-            }
+    function handleDescriptionChange(e: ChangeEvent<HTMLTextAreaElement>) {
+        const inputValue = e.target.value;
+        if(inputValue.trim() !== "") {
+            setDescriptionError(false);
         }
-        setDescription(e.target.value);
+        setDescription(inputValue);
     };
 
-    const handleSubmit = async (e: FormEvent) => {
+    function handleTitleBlur() {
+        setTitleError(!validateTitle());
+    }
+
+    function handleDescriptionBlur() {
+        setDescriptionError(!validateDescription());
+    }
+
+
+    async function handleSubmit(e: FormEvent) {
         e.preventDefault();
         setIsLoading(true);
 
-        if (title.trim() === "")
-            setTitleError("Veuillez entrer un titre.");
-
-        if (description.trim() === "")
-            setDescriptionError("Veuillez entrer une description.");
-
-        if (titleError !== "" || descriptionError !== "") {
+        if (!validateInputsThenSetErrors()) {
             setIsLoading(false);
             return;
         }
@@ -66,7 +85,7 @@ const NewTopic: React.FC = () => {
             displayDefaultToastError()
             throw error;
         }
-        
+
         setIsLoading(false);
     };
 
@@ -81,9 +100,10 @@ const NewTopic: React.FC = () => {
                         id="title"
                         value={title}
                         onChange={handleTitleChange}
+                        onBlur={handleTitleBlur}
                         className="form-control"
                     />
-                    {titleError && <p className="error">{titleError}</p>}
+                    {titleError && <p className="error">Veuillez entrer un titre</p>}
                 </div>
                 <div className="form-group">
                     <label htmlFor="description">Description</label>
@@ -91,9 +111,10 @@ const NewTopic: React.FC = () => {
                         id="description"
                         value={description}
                         onChange={handleDescriptionChange}
+                        onBlur={handleDescriptionBlur}
                         className="form-control"
                     />
-                    {descriptionError && <p className="error">{descriptionError}</p>}
+                    {descriptionError && <p className="error">Veuillez entrer une description.</p>}
                 </div>
                 <button disabled={isLoading} type="submit">Créer le sujet</button>
             </form>

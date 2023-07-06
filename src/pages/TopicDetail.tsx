@@ -19,16 +19,15 @@ const TopicDetail: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }
     const [currentPage, setCurrentPage] = useState(1);
     const [isNewCommentVisible, setIsNewCommentVisible] = useState(false);
     const [commentContent, setCommentContent] = useState("");
-    const [commentContentError, setCommentContentError] = useState("");
+    const [commentContentError, setCommentContentError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const commentsQuery = useQuery(["comments", currentPage], getCommentsForTopic);
     const topicQuery = useQuery(["topic"], getCurrentTopic);
 
-    const handleCommentContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        if (commentContentError !== "") {
-            if (commentContent.trim() !== "") {
-                setCommentContentError("");
-            }
+    function handleCommentContentChange(e: ChangeEvent<HTMLTextAreaElement>) {
+        const inputValue = e.target.value;
+        if (inputValue.trim() !== "") {
+            setCommentContentError(false);
         }
         setCommentContent(e.target.value);
     };
@@ -68,12 +67,12 @@ const TopicDetail: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }
         queryClient.invalidateQueries({ queryKey: ["comments"] });
     }
 
-    const handleSubmit = async (e: FormEvent) => {
+    async function handleSubmit(e: FormEvent) {
         e.preventDefault();
         setIsLoading(true);
 
         if (commentContent.trim() === "") {
-            setCommentContentError("Veuillez écrire un commentaire.");
+            setCommentContentError(true);
             setIsLoading(false);
             return;
         }
@@ -155,7 +154,7 @@ const TopicDetail: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }
                             onChange={handleCommentContentChange}
                             className="form-control mb-2"
                         />
-                        {commentContentError && <p className="error">{commentContentError}</p>}
+                        {commentContentError && <p className="error">Veuillez écrire un commentaire.</p>}
                         <div className="new-comment-buttons d-flex justify-content-end">
                             <button disabled={isLoading} className="btn btn-danger me-3" onClick={closeNewComment}>Annuler</button>
                             <button disabled={isLoading} className="btn btn-success" type="submit">Envoyer</button>
@@ -168,10 +167,10 @@ const TopicDetail: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }
                     <span>Ajouter un commentaire...</span>
                 </button>
             }
-            {commentsQuery.data!.commentListItems.length !== 0 ?
+            {commentsQuery.data.commentListItems.length !== 0 ?
                 <div className="mt-3">
                     <div>
-                        {commentsQuery.data!.commentListItems.map((comment) => (
+                        {commentsQuery.data.commentListItems.map((comment) => (
                             <div key={comment.commentId}>
                                 {comment.author.userId == getConnectedUserId() ?
                                     <CommentCardWithDelete
@@ -191,7 +190,7 @@ const TopicDetail: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }
                             currentPage={currentPage}
                             setCurrentPage={setCurrentPage}
                             itemsPerPage={30}
-                            numberOfItems={commentsQuery.data!.numberOfItems} />
+                            numberOfItems={commentsQuery.data.numberOfItems} />
                     </div>
                 </div>
                 :

@@ -1,15 +1,15 @@
-import '../assets/style/home.css';
+import "../assets/style/home.css";
 
-import { Link } from 'react-router-dom';
-import { askUserForConnection, getConnectedUserId } from '../services/AuthService';
-import { getAllTopics } from '../services/TopicService';
-import TopicCardSkeleton from '../shared/TopicCardSkeleton';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import TopicCardWithDelete from '../shared/TopicCardWithDelete';
-import { useState } from 'react';
-import SearchBar from '../shared/SearchBar';
-import Pagination from '../shared/Pagination';
-import { displayDefaultToastError } from '../services/ToastHelper';
+import { Link } from "react-router-dom";
+import { askUserForConnection, getConnectedUserId } from "../services/AuthService";
+import { getAllTopics } from "../services/TopicService";
+import TopicCardSkeleton from "../shared/TopicCardSkeleton";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import TopicCardWithDelete from "../shared/TopicCardWithDelete";
+import { useState } from "react";
+import SearchBar from "../shared/SearchBar";
+import Pagination from "../shared/Pagination";
+import { displayDefaultToastError } from "../services/ToastHelper";
 
 const MyTopics: React.FC = () => {
     const queryClient = useQueryClient();

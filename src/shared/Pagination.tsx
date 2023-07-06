@@ -62,7 +62,7 @@ const Pagination: React.FC<PaginationProps> = ({ numberOfItems, itemsPerPage, cu
                                 <span>...</span>
                             }
                             <button
-                                className={`btn ${currentPageNumber === currentPage ? 'active' : ''}`}
+                                className={`btn ${currentPageNumber === currentPage ? "active" : ""}`}
                                 onClick={() => changePage(currentPageNumber)}
                             >
                                 {currentPageNumber}

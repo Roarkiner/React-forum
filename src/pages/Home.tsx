@@ -1,14 +1,14 @@
-import { Link } from 'react-router-dom';
-import '../assets/style/home.css'
+import { Link } from "react-router-dom";
+import "../assets/style/home.css"
 
-import TopicCard from '../shared/TopicCard';
-import TopicCardSkeleton from '../shared/TopicCardSkeleton';
-import { useQuery } from '@tanstack/react-query';
-import SearchBar from '../shared/SearchBar';
-import { useState } from 'react';
-import { getAllTopics } from '../services/TopicService';
-import Pagination from '../shared/Pagination';
-import { displayDefaultToastError } from '../services/ToastHelper';
+import TopicCard from "../shared/TopicCard";
+import TopicCardSkeleton from "../shared/TopicCardSkeleton";
+import { useQuery } from "@tanstack/react-query";
+import SearchBar from "../shared/SearchBar";
+import { useState } from "react";
+import { getAllTopics } from "../services/TopicService";
+import Pagination from "../shared/Pagination";
+import { displayDefaultToastError } from "../services/ToastHelper";
 
 const Home: React.FC = () => {
     const [searchValue, setSearchValue] = useState("");

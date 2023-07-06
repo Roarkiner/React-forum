@@ -1,6 +1,6 @@
 import TopicCard from "./TopicCard";
 import { deleteTopic } from "../services/TopicService";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { displayDefaultToastError } from "../services/ToastHelper";
 
 interface TopicCardWithDeleteProps {
