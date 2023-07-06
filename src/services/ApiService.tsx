@@ -39,17 +39,17 @@ export const api = axiosInstance;
 
 export function createUnauthorizedError(): AxiosError {
     return {
-      name: 'Unauthorized',
-      message: 'Unauthorized',
+      name: "Unauthorized",
+      message: "Unauthorized",
       isAxiosError: true,
       toJSON: () => ({}),
       config: {
         headers: {} as any
       },
       response: {
-        data: 'Unauthorized',
+        data: "Unauthorized",
         status: 401,
-        statusText: 'Unauthorized',
+        statusText: "Unauthorized",
         headers: {},
         config: {
             headers: {} as any
