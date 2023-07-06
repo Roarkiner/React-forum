@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { askUserForConnection, getApiToken } from "./AuthService";
-import { displayDefaultToastError } from "./ToastHelper";
+import { displayCustomToastError, displayDefaultToastError } from "./ToastHelper";
 
 const apiUrl = "https://ynov-topics-comments.ld-web.net/";
 
@@ -24,9 +24,12 @@ axiosInstance.interceptors.response.use(
     },
     (error: AxiosError) => {
         if (error.response?.status === 401) {
-            askUserForConnection();
+            if(window.location.pathname == "/login") {
+                displayCustomToastError("Email ou mot de passe incorrect.");
+                throw error;
+            } else
+                askUserForConnection();
         } else {
-            displayDefaultToastError();
             return Promise.reject(error);
         }
     }

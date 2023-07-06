@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { registerUser } from '../services/AuthService';
 import { UserSaveModel } from '../models/UserSaveModel';
-import { toast } from 'react-toastify';
-import { displayDefaultToastError } from '../services/ToastHelper';
-import { EmailAlreadyUsedError } from './EmailAlreadyUsedError';
+import { displayCustomToastError, displayDefaultToastError } from '../services/ToastHelper';
+import { AxiosError } from 'axios';
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -76,20 +75,14 @@ const Register: React.FC = () => {
       await registerUser(new UserSaveModel(email, password));
       window.location.href = "/";
     } catch (error) {
-      if (error instanceof EmailAlreadyUsedError) {
-        toast.error(error.message, {
-          position: toast.POSITION.BOTTOM_RIGHT,
-          autoClose: 3000,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: false
-        });
+      if (error instanceof AxiosError && String(error.response?.data["hydra:description"]).includes("UNIQUE constraint failed: user.email")) {
+        displayCustomToastError("Cet email est déjà utilisé.");
       } else {
         displayDefaultToastError();
-        throw error;
       }
+      setIsLoading(false);
+      throw error;
     }
-    setIsLoading(false);
   };
 
   return (
