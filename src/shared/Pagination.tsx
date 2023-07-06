@@ -58,7 +58,7 @@ const Pagination: React.FC<PaginationProps> = ({ numberOfItems, itemsPerPage, cu
                     const currentPageNumber = listOfPageNumber[arrayIndex];
                     elements.push(
                         <div key={currentPageNumber}>
-                            { currentPageNumber === numberOfPages && listOfPageNumber[arrayIndex - 1] !== currentPageNumber - 1 &&
+                            { doesPagesOverflow() && currentPageNumber === numberOfPages && listOfPageNumber[arrayIndex - 1] !== currentPageNumber - 1 &&
                                 <span>...</span>
                             }
                             <button
@@ -67,7 +67,7 @@ const Pagination: React.FC<PaginationProps> = ({ numberOfItems, itemsPerPage, cu
                             >
                                 {currentPageNumber}
                             </button>
-                            { currentPageNumber === 1 && listOfPageNumber[arrayIndex + 1] !== currentPageNumber + 1 &&
+                            { doesPagesOverflow() && currentPageNumber === 1 && listOfPageNumber[arrayIndex + 1] !== currentPageNumber + 1 &&
                                 <span>...</span>
                             }
                         </div>
