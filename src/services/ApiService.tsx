@@ -30,7 +30,6 @@ axiosInstance.interceptors.response.use(
             } else
                 askUserForConnection();
         } else {
-            displayDefaultToastError();
             return Promise.reject(error);
         }
     }
